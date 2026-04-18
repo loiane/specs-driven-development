@@ -15,34 +15,136 @@ The agent validates its own work via a layered harness (build, static analysis, 
 - **Pre-commit code review** by an agent that uses a Spring-specific rubric.
 - **Tri-platform** with a platform-neutral core; thin wrappers for each tool.
 
-## Quickstart
+## Install
+
+This toolkit is a **set of files you drop into your repo**, not a package you `npm install` or `mvn install`. Pick the path that matches your situation.
+
+### Prerequisites
+
+- Java 25 + Maven 3.9+ (for the harness to actually run).
+- At least one supported agent surface installed:
+  - [Claude Code](https://docs.claude.com/en/docs/claude-code) (uses `.claude/`)
+  - [GitHub Copilot in VS Code](https://code.visualstudio.com/docs/copilot/overview) with chat enabled (uses `.github/`)
+  - [Windsurf](https://windsurf.com/) (uses `.windsurf/`)
+- `bash`, `git`, `jq` on your `PATH` (the harness scripts use them).
+
+You only need the directories for the agent(s) you actually use; the others can be deleted.
+
+### Option A — Start a new project from this toolkit
 
 ```bash
-# 0. (Brownfield only) classify the project and capture a baseline
-/onboard
+# 1. Clone (or use as a template)
+git clone https://github.com/loiane/specs-driven-development.git my-service
+cd my-service
+rm -rf .git && git init
 
-# 1. Start a feature (free text or ticket reference)
-/specify "Add gift-card checkout"     # or: /specify JIRA-123
+# 2. Drop in your own Spring Boot 4 application code under src/
+#    Merge shared/maven/parent-pom-fragment.xml into your pom.xml
+#    (it pins the 10-layer harness: Surefire, Failsafe, JaCoCo, PIT, Checkstyle,
+#    SpotBugs, ArchUnit deps, OWASP dep-check, OpenAPI generator).
 
-# 2. Walk through the workflow
-/spec-review                          # checklist verdict on 01-spec.md
-/plan                                 # produces 03-design.md + 04-tasks.md + .tdd-state.json
-/build T-001                          # red → green → refactor → simplify (one task)
-/test --gap                           # close any coverage / mutation gaps
-/validate                             # full 10-layer harness + traceability + new-code coverage
-/review                               # pre-commit code review against the Spring rubric
-# Then YOU run: git commit (the agent never commits)
+# 3. Make the scripts executable
+chmod +x scripts/*.sh
+
+# 4. Verify the harness wires up
+./scripts/harness.sh --dry-run     # lists the 10 gates without running them
 ```
 
-Two read-only helpers:
+### Option B — Add the toolkit to an existing Spring repo
+
+```bash
+# From the root of your existing repo:
+git clone --depth=1 https://github.com/loiane/specs-driven-development.git /tmp/sdd
+
+# Copy only what you need (skip the agent dirs you won't use):
+cp -r /tmp/sdd/{docs,shared,scripts,examples} .
+cp -r /tmp/sdd/.claude   .   # if you use Claude Code
+cp -r /tmp/sdd/.github   .   # if you use Copilot   (merges with existing .github/)
+cp -r /tmp/sdd/.windsurf .   # if you use Windsurf
+
+chmod +x scripts/*.sh
+
+# Then merge shared/maven/parent-pom-fragment.xml into your pom.xml.
+# Then run the brownfield onboarding command from your agent (see Use below).
+```
+
+> **Note on `.github/`** — if you already have `.github/workflows/`, review
+> `.github/workflows/harness.yml` before copying so it doesn't clobber yours.
+
+### Verify per-platform wiring
+
+| Platform | Smoke test |
+|---|---|
+| Claude Code  | Open the repo, run `/help` — you should see the command catalog. |
+| Copilot      | Open Copilot Chat, type `/specify` — you should see the chat-mode prompt from `.github/chatmodes/`. |
+| Windsurf     | Open Cascade, type `/specify` — Windsurf loads the workflow from `.windsurf/workflows/`. |
+
+## Use
+
+Once installed, you drive everything from your agent's chat using slash commands. The same commands work on all three platforms.
+
+### Day-zero (brownfield only)
+
+```text
+/onboard
+```
+
+Classifies the repo, captures a baseline harness run, writes
+`.specs/_onboarding.md` and `docs/known-debt.md`, and adds any missing harness
+layers as ratchets (so existing failures don't block you, but no new ones can
+land). See [examples/brownfield/README.md](examples/brownfield/README.md).
+
+### Per-feature loop
+
+```text
+/specify "Add gift-card checkout"   # or: /specify JIRA-123
+/spec-review                        # gate exit from Phase 1
+/plan                               # design + tasks + .tdd-state.json
+/build T-001                        # red → green → refactor → simplify (one task at a time)
+/test --gap                         # close coverage / mutation gaps
+/validate                           # full 10-layer harness + traceability
+/review                             # pre-commit code review against the Spring rubric
+git commit                          # YOU run this — the agent never commits
+```
+
+Repeat `/build T-NNN` for each task in `04-tasks.md`. The agent refuses to edit
+`src/main/**` unless `.specs/<feature-id>/.tdd-state.json` shows a failing test
+for the active task.
+
+### Read-only helpers
 
 - `/status` — see where each feature sits in the pipeline.
 - `/help [command]` — print the command catalog or a single command spec.
 
-Natural-language aliases work too: *"simplify the code"* → `/code-simplify`,
-*"spec this"* → `/specify`, *"validate"* → `/validate`, etc. Aliases are
-documented in [shared/commands/README.md](shared/commands/README.md) and
-enforced by `.claude/hooks/route-natural-language-aliases.sh`.
+### Natural-language aliases
+
+You don't have to remember the slash names. These phrases are routed to the
+right command by [.claude/hooks/route-natural-language-aliases.sh](.claude/hooks/route-natural-language-aliases.sh)
+and the equivalent Copilot/Windsurf instructions:
+
+| You type | Runs |
+|---|---|
+| "spec this" / "turn this ticket into requirements" | `/specify` |
+| "review the spec" | `/spec-review` |
+| "plan this" / "design this" | `/plan` |
+| "implement T-003" / "build T-003" | `/build T-003` |
+| "validate" / "run the harness" | `/validate` |
+| "review the code" / "pre-commit review" | `/review` |
+| "simplify the code" / "remove the cleverness" | `/code-simplify` |
+| "onboard this repo" | `/onboard` |
+
+Full list: [shared/commands/README.md](shared/commands/README.md).
+
+### Running the harness directly
+
+The same gates the agent runs are reachable from a normal terminal:
+
+```bash
+./scripts/harness.sh                 # all 10 layers
+./scripts/harness.sh --layer tests   # one layer
+./scripts/check-new-code-coverage.sh # diff-coverage gate against main
+./scripts/traceability.sh <feature-id>
+```
 
 ## Repository layout
 
