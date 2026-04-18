@@ -67,7 +67,7 @@
    ArchUnit with a single "no cycles" rule first to catch regression while
    the team carves out bounded contexts.
 7. **Spring Boot 3.2 vs the methodology's target Spring Boot 4 / Framework 7.**
-   *Action:* track as a separate roadmap item; not blocking for `/specify`.
+   *Action:* track as a separate roadmap item; not blocking for `/spec`.
    The harness fragment supports both.
 
 ## Recommended next commands (in order)
@@ -79,9 +79,9 @@
 5. Add SpotBugs + Error Prone (PR 5).
 6. Add OWASP Dependency Check (PR 6).
 7. Add ArchUnit "no cycles" rule (PR 7).
-8. **Only then** run `/specify` for the first new feature using this toolkit.
+8. **Only then** run `/spec` for the first new feature using this toolkit.
 
-The agent will not run `/specify` until at least PR 1–4 are green; otherwise
+The agent will not run `/spec` until at least PR 1–4 are green; otherwise
 `/validate` would always fail and the methodology becomes ceremony.
 
 ## Files written

@@ -2,7 +2,7 @@
 
 **Phase:** 6 — pre-commit code review
 **Owning agent:** `shared/agents/spring-code-reviewer.md`
-**Skills used:** `spring-code-review-rubric`, `clarity-over-cleverness`, `spring-boot-4-conventions`, `spring-security-baseline`
+**Skills used:** `spring-code-review-rubric`, `clarity-over-cleverness`, `spring-boot-4-conventions`, `spring-security-baseline`, `performance-optimization`
 
 ## Purpose
 Run a structured self-review of the diff before the user commits. Produces `08-code-review.md` with categorized findings.

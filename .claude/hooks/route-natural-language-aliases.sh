@@ -24,7 +24,7 @@ case "$lc" in
   *"simplify the code"*|*"make this clearer"*|*"make this readable"*|*"remove the cleverness"*)
     emit "/code-simplify" ;;
   *"spec this"*|*"turn this ticket into requirements"*|*"write a spec"*)
-    emit "/specify" ;;
+    emit "/spec" ;;
   *"review the spec"*)
     emit "/spec-review" ;;
   *"plan this"*|*"design this"*|*"break into tasks"*|*"break this into tasks"*)
@@ -33,6 +33,8 @@ case "$lc" in
     emit "/validate" ;;
   *"review the code"*|*"pre-commit review"*|*"code review"*)
     emit "/review" ;;
+  *"ship it"*|*"release this"*|*"prepare release"*)
+    emit "/ship" ;;
   *"onboard this repo"*|*"onboard this project"*)
     emit "/onboard" ;;
   *)

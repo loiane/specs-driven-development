@@ -28,7 +28,7 @@ None required. Optional argument: a path to constrain the scan (e.g. a module su
    - **Brownfield** otherwise.
 3. If brownfield, run `scripts/harness.sh --baseline` and capture results. Do NOT attempt to fix failures.
 4. Diff the project's POM against `shared/maven/parent-pom-fragment.xml`; list missing harness layers as Findings.
-5. Write `.specs/_onboarding.md` covering: classification, stack JSON, baseline gate results, missing layers, recommended `/specify` starting point.
+5. Write `.specs/_onboarding.md` covering: classification, stack JSON, baseline gate results, missing layers, recommended `/spec` starting point.
 
 ## Refuse if
 - `migration == "both"` — fatal; ask the user to pick one.

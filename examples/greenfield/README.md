@@ -44,7 +44,7 @@ The interesting files are under `.specs/2025-01-15-gift-card-checkout/`. Read
 them in order:
 
 1. [`01-spec.md`](./.specs/2025-01-15-gift-card-checkout/01-spec.md) — what the
-   user typed at `/specify` and what the spec author produced.
+   user typed at `/spec` and what the spec author produced.
 2. [`02-spec-review.md`](./.specs/2025-01-15-gift-card-checkout/02-spec-review.md) — the
    review checklist verdict.
 3. [`03-design.md`](./.specs/2025-01-15-gift-card-checkout/03-design.md) — module

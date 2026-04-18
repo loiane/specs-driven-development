@@ -162,3 +162,29 @@ Commit is gated on **zero blockers/majors** or a documented waiver. Request-chan
 | 5. Test | `06-test-plan.md` | `spring-test-engineer` | Cross-cutting suite mapped |
 | 6. Validate | `07-validation-report.md`, `07a-traceability.md` | `spring-validator` | Harness green; full traceability |
 | 7. Code review | `08-code-review.md` | `spring-code-reviewer` | Zero blockers/majors |
+| 8. Ship (optional) | `09-ship-plan.md` | `spring-code-reviewer` | All pre-deploy gates green |
+
+## Phase 8 — Ship (optional, post-commit)
+
+**Owner:** `spring-code-reviewer` (reused; no new persona)
+**Artifact:** `09-ship-plan.md`
+**Command:** `/ship`
+**Skills:** `shipping-and-launch`, `spring-security-baseline`, `flyway-or-liquibase-detection`
+
+A structured pre-deploy plan that verifies the seven prior phases are green, classifies migrations (forward-only / expand / contract / breaking), captures feature-flag posture, signs off observability (metrics + alerts + dashboards), records a concrete rollback plan, plans a staged rollout (canary → % steps → 100%), and drafts release notes (external + internal).
+
+**The agent never deploys.** It produces the ship plan and prints the deploy command for the user to run.
+
+**Exit contract:** `09-ship-plan.md` exists with all seven sections filled, every pre-ship gate is `PASS`, every migration is classified with a named rollback step, every new endpoint has a metric and an alert (or a documented "no alert" reason), and a human has confirmed the flag owner, alert thresholds, and rollout cohorts.
+
+Phase 8 is **optional** — teams that ship via a separate release pipeline may skip it. When used, it slots in after commit and before the deploy trigger.
+
+## Performance work
+
+Performance is treated as a cross-cutting concern, not a phase. Apply `shared/skills/performance-optimization/SKILL.md` whenever:
+
+- Phase 3 (Plan) touches a hot path, a new query, a new external call, or anything with a stated SLO.
+- Phase 4 (Build) executes a task explicitly targeting performance.
+- Phase 7 (Review) inspects a diff for N+1 queries, unbounded lists, virtual-thread pinning, missing pagination, untimed external calls, or other antipatterns.
+
+The rule is **measure first**: no perf change ships without a profile artifact (async-profiler, JFR, JMH, Micrometer histogram, or `EXPLAIN ANALYZE`) and a before/after delta recorded in `05-implementation-log.md`.

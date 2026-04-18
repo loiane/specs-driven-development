@@ -20,7 +20,7 @@ authoritative_references:
 - **minor** — should fix; leave a note if not.
 - **nit** — taste; mention once, don't insist.
 
-## Nine sections
+## Ten sections
 
 ### 1. Traceability
 
@@ -92,6 +92,20 @@ authoritative_references:
 - Breaking changes have an ADR.
 - DB migration follows `flyway-or-liquibase-detection`.
 - No edits to a previously-released migration script.
+
+### 10. Performance
+
+Apply `shared/skills/performance-optimization/SKILL.md`. Block on:
+
+- Any controller method returning `List<T>` without pagination (`Pageable`).
+- N+1 queries (entity navigation in a loop or stream).
+- New external HTTP call without explicit connect/read/write timeouts.
+- `@Cacheable` added without a TTL or a size cap.
+- `@Transactional` wrapping an outbound HTTP call.
+- `synchronized` block around an I/O call (pins virtual-thread carriers).
+- Hikari `maximumPoolSize` change without a measurement artifact.
+- A `Counter` used to record a duration (use `Timer` with histogram).
+- A perf-labeled change without a profile, JMH result, or before/after metric in `05-implementation-log.md`.
 
 ## Findings table format
 

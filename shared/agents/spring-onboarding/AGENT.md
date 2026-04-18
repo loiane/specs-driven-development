@@ -66,7 +66,7 @@ Bootstrap an existing Spring codebase into the spec-driven workflow without bloc
 
 ## Handoff
 
-Hand off to `spring-spec-author` (via `/specify`) when:
+Hand off to `spring-spec-author` (via `/spec`) when:
 
 - [ ] `.specs/_stack.json` present and unambiguous.
 - [ ] `.specs/_baseline.json` committed.

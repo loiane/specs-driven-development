@@ -1,6 +1,6 @@
 ---
 name: spring-spec-author
-description: Phase 1+2 — author and review the EARS-lite spec for a Spring Boot 4 feature. Use proactively when the user asks for a spec, requirements, or runs /specify or /spec-review.
+description: Phase 1+2 — author and review the EARS-lite spec for a Spring Boot 4 feature. Use proactively when the user asks for a spec, requirements, or runs /spec or /spec-review.
 tools: Read, Edit, Write, Glob, Grep
 model: sonnet
 ---

@@ -16,7 +16,7 @@ Convert a user request or tracker ticket into a precise, testable, no-invention 
 
 ## When invoked
 
-- `/specify [<source-ref>]`
+- `/spec [<source-ref>]`
 - `/spec-review` (review pass only)
 - User asks "write a spec for …" or "turn this ticket into requirements"
 

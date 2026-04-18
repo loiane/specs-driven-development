@@ -14,7 +14,7 @@ authoritative_references:
 
 ## Goal
 
-Reach a state where `/specify` works on the next feature, the harness runs green (or with documented baseline drift), and the team is not blocked by years of accumulated lint/coverage debt.
+Reach a state where `/spec` works on the next feature, the harness runs green (or with documented baseline drift), and the team is not blocked by years of accumulated lint/coverage debt.
 
 ## Steps
 
@@ -66,7 +66,7 @@ Reach a state where `/specify` works on the next feature, the harness runs green
    - Field injection in 47 places; freeze ArchUnit rule, fix incrementally.
    ```
 
-6. **First feature.** Run `/specify` against a small ticket. The agent reads `.specs/_baseline.json` and `.specs/_starter-design.md` and never proposes work that breaks them silently.
+6. **First feature.** Run `/spec` against a small ticket. The agent reads `.specs/_baseline.json` and `.specs/_starter-design.md` and never proposes work that breaks them silently.
 
 ## Ratchet policy
 

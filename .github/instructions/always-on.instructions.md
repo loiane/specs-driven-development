@@ -55,12 +55,13 @@ When the user types these phrases, treat them as the corresponding command:
 | Phrase | Command |
 |---|---|
 | "simplify the code" / "make this clearer" / "remove the cleverness" | `/code-simplify` |
-| "spec this" / "turn this ticket into requirements" | `/specify` |
+| "spec this" / "turn this ticket into requirements" | `/spec` |
 | "review the spec" | `/spec-review` |
 | "plan this" / "design this" / "break into tasks" | `/plan` |
 | "implement T-NNN" / "build T-NNN" | `/build T-NNN` |
 | "validate" / "run the harness" | `/validate` |
 | "review the code" / "pre-commit review" | `/review` |
+| "ship it" / "release this" / "prepare release" | `/ship` |
 | "onboard this repo" | `/onboard` |
 
 ## Cross-platform parity

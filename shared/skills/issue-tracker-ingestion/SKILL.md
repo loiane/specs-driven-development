@@ -1,6 +1,6 @@
 ---
 name: issue-tracker-ingestion
-description: Pull issue/PR/ticket details from Jira, GitHub Issues, Linear, or Azure Boards via MCP into `01-spec.md` `## Source`. Use at the start of `/specify` whenever the user references an external ticket.
+description: Pull issue/PR/ticket details from Jira, GitHub Issues, Linear, or Azure Boards via MCP into `01-spec.md` `## Source`. Use at the start of `/spec` whenever the user references an external ticket.
 when_to_use:
   - Phase 1 (Specify) — converting a tracker ID into a spec.
   - Verifying that a spec's `## Source` accurately reflects the ticket.
@@ -57,11 +57,11 @@ If a source field is missing (e.g. no acceptance criteria in the ticket), the ag
 - **Q-001** — Source ticket has no explicit acceptance criteria. Need user to confirm AC list before proceeding to AC drafting.
 ```
 
-`/specify` then halts and asks the user.
+`/spec` then halts and asks the user.
 
 ## Updating after the ticket changes
 
-If the user re-runs `/specify` and the ticket has changed:
+If the user re-runs `/spec` and the ticket has changed:
 
 - Re-fetch.
 - Diff old vs new in `## Out-of-Band Inputs` ("ticket updated 2026-04-19; description gained paragraph about partial redemption").

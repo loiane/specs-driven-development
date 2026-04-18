@@ -38,7 +38,7 @@ recommended retrofit path before any new feature work begins.
 3. **Replace H2 IT with Testcontainers Postgres** for tests that touch SQL.
 4. **Introduce ArchUnit** with a single rule: no cycles. Ratchet additional
    once package boundaries are clearer.
-5. Only after 1–4 are green do you run `/specify` for a new feature.
+5. Only after 1–4 are green do you run `/spec` for a new feature.
 
 The point: the methodology never demands you fix a brownfield project to its
 ideal state in one pass. It captures reality, then improves it deliberately.

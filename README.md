@@ -82,8 +82,8 @@ chmod +x scripts/*.sh
 | Platform | Smoke test |
 |---|---|
 | Claude Code  | Open the repo, run `/help` — you should see the command catalog. |
-| Copilot      | Open Copilot Chat, type `/specify` — you should see the chat-mode prompt from `.github/chatmodes/`. |
-| Windsurf     | Open Cascade, type `/specify` — Windsurf loads the workflow from `.windsurf/workflows/`. |
+| Copilot      | Open Copilot Chat, type `/spec` — you should see the chat-mode prompt from `.github/chatmodes/`. |
+| Windsurf     | Open Cascade, type `/spec` — Windsurf loads the workflow from `.windsurf/workflows/`. |
 
 ## Use
 
@@ -103,7 +103,7 @@ land). See [examples/brownfield/README.md](examples/brownfield/README.md).
 ### Per-feature loop
 
 ```text
-/specify "Add gift-card checkout"   # or: /specify JIRA-123
+/spec "Add gift-card checkout"      # or: /spec JIRA-123
 /spec-review                        # gate exit from Phase 1
 /plan                               # design + tasks + .tdd-state.json
 /build T-001                        # red → green → refactor → simplify (one task at a time)
@@ -111,6 +111,7 @@ land). See [examples/brownfield/README.md](examples/brownfield/README.md).
 /validate                           # full 10-layer harness + traceability
 /review                             # pre-commit code review against the Spring rubric
 git commit                          # YOU run this — the agent never commits
+/ship                               # post-commit ship plan + release notes (never deploys)
 ```
 
 Repeat `/build T-NNN` for each task in `04-tasks.md`. The agent refuses to edit
@@ -130,13 +131,14 @@ and the equivalent Copilot/Windsurf instructions:
 
 | You type | Runs |
 |---|---|
-| "spec this" / "turn this ticket into requirements" | `/specify` |
+| "spec this" / "turn this ticket into requirements" | `/spec` |
 | "review the spec" | `/spec-review` |
 | "plan this" / "design this" | `/plan` |
 | "implement T-003" / "build T-003" | `/build T-003` |
 | "validate" / "run the harness" | `/validate` |
 | "review the code" / "pre-commit review" | `/review` |
 | "simplify the code" / "remove the cleverness" | `/code-simplify` |
+| "ship it" / "release this" / "prepare release" | `/ship` |
 | "onboard this repo" | `/onboard` |
 
 Full list: [shared/commands/README.md](shared/commands/README.md).
@@ -158,9 +160,9 @@ The same gates the agent runs are reachable from a normal terminal:
 docs/             methodology · harness-principles · spec-format · platform-mapping · artifact-contract
 shared/           single source of truth (platform-neutral)
   ├ agents/       7 AGENT.md role files
-  ├ skills/       20 SKILL.md domain knowledge files
-  ├ commands/     11 command specifications
-  ├ templates/    9 .specs/ artifact templates
+  ├ skills/       21 SKILL.md domain knowledge files
+  ├ commands/     12 command specifications
+  ├ templates/    10 .specs/ artifact templates
   ├ checklists/   4 review/DoD/gate checklists
   └ maven/        parent-pom-fragment.xml (10-layer harness, pinned versions)
 .claude/          agents · skills · commands · hooks · settings.json   (Claude Code wrappers)

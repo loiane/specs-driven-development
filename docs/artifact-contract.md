@@ -15,6 +15,7 @@ Every feature produces these files, in order. Phase advance is gated on the prio
     ├── 07-validation-report.md     # phase 6 — owner: spring-validator
     ├── 07a-traceability.md         # phase 6 — owner: spring-validator
     ├── 08-code-review.md           # phase 7 — owner: spring-code-reviewer
+    ├── 09-ship-plan.md             # phase 8 (optional) — owner: spring-code-reviewer
     ├── .tdd-state.json             # phase 4 — runtime state for block-impl-without-failing-test
     └── adr/
         └── NNN-<slug>.md           # MADR ADRs referenced from 03-design.md
@@ -40,6 +41,7 @@ Each artifact starts from the matching template under `shared/templates/`:
 | `07-validation-report.md` | `validation-report.template.md` |
 | `07a-traceability.md` | `traceability.template.md` |
 | `08-code-review.md` | `code-review.template.md` |
+| `09-ship-plan.md` | `ship-plan.template.md` |
 | `adr/NNN-<slug>.md` | `adr.template.md` |
 
 ## `.tdd-state.json`

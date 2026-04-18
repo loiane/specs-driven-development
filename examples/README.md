@@ -10,7 +10,7 @@ unsure what a given phase's output should look like.
 
 A fresh Spring Boot 4 / Spring Framework 7 service. Demonstrates a single
 feature — `gift-card-checkout` — taken from a one-sentence intent through
-`/specify` → `/spec-review` → `/plan` → `/build` → `/test` → `/validate` →
+`/spec` → `/spec-review` → `/plan` → `/build` → `/test` → `/validate` →
 `/review`. Includes a `pom.xml` skeleton wired to the harness, a representative
 Modulith-free module layout (top-level packages with `internal` sub-packages enforced by ArchUnit), and a complete `.specs/2025-01-15-gift-card-checkout/`
 directory.

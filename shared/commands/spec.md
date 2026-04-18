@@ -1,4 +1,4 @@
-# /specify
+# /spec
 
 **Phase:** 1 — specify
 **Owning agent:** `shared/agents/spring-spec-author.md`

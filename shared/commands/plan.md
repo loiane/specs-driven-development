@@ -2,7 +2,7 @@
 
 **Phase:** 3 — plan
 **Owning agent:** `shared/agents/spring-architect.md`
-**Skills used:** `spring-task-decomposition`, `spring-boot-4-conventions`, `openapi-contract-first`, `flyway-or-liquibase-detection`, `archunit-rules`, `adr-authoring`
+**Skills used:** `spring-task-decomposition`, `spring-boot-4-conventions`, `openapi-contract-first`, `flyway-or-liquibase-detection`, `archunit-rules`, `adr-authoring`, `performance-optimization`
 
 ## Purpose
 Translate a `PASS`-verdict spec into a design (`03-design.md`) and a task list (`04-tasks.md`), then initialize `.tdd-state.json`.
