@@ -69,7 +69,13 @@ chmod +x scripts/*.sh
 ```
 
 > **Note on `.github/`** — if you already have `.github/workflows/`, review
-> `.github/workflows/harness.yml` before copying so it doesn't clobber yours.
+> `.github/workflows/harness.yml` before copying so it doesn't clobble yours.
+> The toolkit ships two workflows:
+>
+> | Workflow | Purpose | When to keep |
+> |---|---|---|
+> `ci.yml` | Validates the toolkit itself (shellcheck, YAML lint, broken links, skill structure) | Only in the **toolkit repo** — delete it from your Spring project |
+> `harness.yml` | Runs the full 10-layer Spring harness (build, tests, coverage, mutation, etc.) | Only in your **Spring project** — it requires a `pom.xml` |
 
 ### Verify per-platform wiring
 
@@ -158,7 +164,7 @@ shared/           single source of truth (platform-neutral)
   ├ checklists/   4 review/DoD/gate checklists
   └ maven/        parent-pom-fragment.xml (10-layer harness, pinned versions)
 .claude/          agents · skills · commands · hooks · settings.json   (Claude Code wrappers)
-.github/          chatmodes · prompts · instructions · workflows/harness.yml   (Copilot + CI)
+.github/          chatmodes · prompts · instructions · workflows/{ci,harness}.yml   (Copilot + CI)
 .windsurf/        rules · workflows                                    (Windsurf wrappers)
 scripts/          harness.sh · detect-stack.sh · check-new-code-coverage.sh · traceability.sh
 examples/         greenfield (worked end-to-end) · brownfield (onboarding report)
