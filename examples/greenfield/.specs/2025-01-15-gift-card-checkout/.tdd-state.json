@@ -1,0 +1,56 @@
+{
+  "active_task": null,
+  "feature_id": "2025-01-15-gift-card-checkout",
+  "tasks": {
+    "T-001": {
+      "phase": "done",
+      "files_in_scope": [
+        "src/main/resources/db/migration/V1__gift_cards.sql",
+        "src/main/java/com/example/checkout/giftcard/internal/GiftCardCodeHasher.java",
+        "src/main/java/com/example/checkout/giftcard/internal/GiftCardEntity.java",
+        "src/main/java/com/example/checkout/giftcard/internal/GiftCardRepository.java",
+        "src/main/java/com/example/checkout/giftcard/internal/GiftCardRedemptionEntity.java",
+        "src/main/java/com/example/checkout/giftcard/internal/GiftCardRedemptionRepository.java",
+        "src/test/java/com/example/checkout/giftcard/internal/GiftCardCodeHasherTest.java",
+        "src/test/java/com/example/checkout/giftcard/internal/GiftCardRepositoryIT.java"
+      ],
+      "acs_covered": [],
+      "red_failure_excerpt": "NoClassDefFoundError: GiftCardCodeHasher"
+    },
+    "T-002": {
+      "phase": "done",
+      "files_in_scope": [
+        "src/main/java/com/example/checkout/giftcard/api/GiftCardRedemptionService.java",
+        "src/main/java/com/example/checkout/giftcard/api/GiftCardRedemptionResult.java",
+        "src/main/java/com/example/checkout/giftcard/api/RedeemCommand.java",
+        "src/main/java/com/example/checkout/giftcard/internal/DefaultGiftCardRedemptionService.java",
+        "src/test/java/com/example/checkout/giftcard/internal/DefaultGiftCardRedemptionServiceTest.java",
+        "src/test/java/com/example/checkout/giftcard/internal/GiftCardRedemptionIT.java"
+      ],
+      "acs_covered": ["AC-001", "AC-005"],
+      "red_failure_excerpt": "expected: Applied[...] but was: <service does not exist>"
+    },
+    "T-003": {
+      "phase": "done",
+      "files_in_scope": [
+        "src/main/java/com/example/checkout/giftcard/internal/DefaultGiftCardRedemptionService.java",
+        "src/main/java/com/example/checkout/giftcard/internal/IdempotencyStore.java",
+        "src/test/java/com/example/checkout/giftcard/internal/DefaultGiftCardRedemptionServiceRejectionTest.java",
+        "src/test/java/com/example/checkout/giftcard/internal/IdempotentRedeemIT.java"
+      ],
+      "acs_covered": ["AC-002", "AC-003", "AC-004", "AC-006"],
+      "red_failure_excerpt": "expected: Rejected[gift_card.unknown] but threw: NoSuchElementException"
+    },
+    "T-004": {
+      "phase": "done",
+      "files_in_scope": [
+        "src/main/java/com/example/checkout/giftcard/internal/GiftCardController.java",
+        "src/main/resources/openapi/openapi.yaml",
+        "src/test/java/com/example/checkout/giftcard/internal/GiftCardControllerTest.java",
+        "src/test/java/com/example/checkout/giftcard/internal/GiftCardContractTest.java"
+      ],
+      "acs_covered": ["AC-001", "AC-002", "AC-003", "AC-004", "AC-006"],
+      "red_failure_excerpt": "POST /orders/{id}/gift-card -> 404 (no controller)"
+    }
+  }
+}

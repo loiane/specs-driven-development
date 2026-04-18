@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep",
+      "Bash(mvn *)",
+      "Bash(./scripts/*)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git status)",
+      "Bash(git rev-parse *)"
+    ],
+    "deny": [
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(rm -rf *)",
+      "Bash(mvn * -DskipTests*)",
+      "Bash(mvn * -Dpit.skip*)",
+      "Bash(mvn * --no-verify*)",
+      "Bash(git * --no-verify*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Edit|Write", "command": ".claude/hooks/block-impl-without-failing-test.sh" },
+      { "matcher": "Edit|Write", "command": ".claude/hooks/enforce-files-in-scope.sh" },
+      { "matcher": "Edit|Write", "command": ".claude/hooks/block-progress-on-open-questions.sh" },
+      { "matcher": "Bash",       "command": ".claude/hooks/forbid-skip-flags.sh" }
+    ],
+    "PostToolUse": [
+      { "matcher": "Edit|Write", "command": ".claude/hooks/auto-format-touched.sh" },
+      { "matcher": "Edit|Write", "command": ".claude/hooks/log-tdd-state-transition.sh" }
+    ],
+    "UserPromptSubmit": [
+      { "command": ".claude/hooks/route-natural-language-aliases.sh" }
+    ]
+  }
+}
