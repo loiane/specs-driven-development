@@ -50,7 +50,13 @@ jobs:
         run: chmod +x scripts/*.sh
 
       - name: Detect stack
+        id: detect-stack
         run: |
+          if [ ! -f pom.xml ]; then
+            echo "No pom.xml found — this is a toolkit-only checkout; skipping harness."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           ./scripts/detect-stack.sh | tee target-stack.json
           mkdir -p .specs
           cp target-stack.json .specs/_stack.json
@@ -58,18 +64,22 @@ jobs:
             echo "::error::Both Flyway and Liquibase detected. Pick one." >&2
             exit 1
           fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
 
       - name: Run harness (10 layers)
+        if: steps.detect-stack.outputs.skip != 'true'
         run: ./scripts/harness.sh --report > target/harness-summary.json
         env:
           MAVEN_OPTS: -Xmx2g
           TESTCONTAINERS_REUSE_ENABLE: 'true'
 
       - name: New-code coverage gate
+        if: steps.detect-stack.outputs.skip != 'true'
         run: |
           BASE_REF=origin/${{ github.base_ref || 'main' }} ./scripts/check-new-code-coverage.sh
 
       - name: Traceability matrix (per active feature)
+        if: steps.detect-stack.outputs.skip != 'true'
         run: |
           for spec_dir in .specs/*/; do
             [ -d "$spec_dir" ] || continue
@@ -79,7 +89,7 @@ jobs:
           done
 
       - name: Upload harness summary
-        if: always()
+        if: always() && steps.detect-stack.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: harness-summary
@@ -93,7 +103,7 @@ jobs:
           retention-days: 14
 
       - name: Summarize gates in job summary
-        if: always()
+        if: always() && steps.detect-stack.outputs.skip != 'true'
         run: |
           {
             echo "## Harness gates"
@@ -111,7 +121,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Comment on PR
-        if: always() && github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request' && steps.detect-stack.outputs.skip != 'true'
         uses: actions/github-script@v7
         with:
           script: |
