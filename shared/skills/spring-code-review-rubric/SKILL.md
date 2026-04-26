@@ -44,6 +44,7 @@ authoritative_references:
 - No `@Autowired` on fields or constructors.
 - No `@SpringBootTest` where a slice would do.
 - **No Lombok** anywhere in the diff (any `lombok.*` import is a must-fix).
+- **No fully-qualified type names (FQNs) inline in code** — method parameters, return types, `throws` clauses, and bodies must use simple names backed by proper `import` statements at the top of the file. E.g. `jakarta.servlet.http.HttpServletResponse response` as a parameter is a must-fix; it must be `HttpServletResponse response` with `import jakarta.servlet.http.HttpServletResponse;`.
 
 ### 4. Error handling
 

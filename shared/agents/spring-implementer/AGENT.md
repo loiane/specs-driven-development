@@ -66,6 +66,12 @@ Make the failing test pass with the minimum production code (green), then refact
 - No test edits — except adding new tests for triangulation. Modifying an existing test's assertions to "match new behavior" is forbidden.
 - No `git commit`. Commits only happen after `/review` approves.
 - No silent default — if the spec/design doesn't say what an edge case should do, halt and ask (or open a `Q-NNN` in the task notes).
+- **Controller inputs must be validated with Jakarta Bean Validation.**
+  - `@Validated` on the controller class.
+  - `@Valid` on every `@RequestBody` parameter.
+  - Appropriate constraints (`@Positive`, `@NotBlank`, `@Max`, etc.) on every `@PathVariable` and `@RequestParam`.
+- **Never use `Pageable` as a controller parameter.** Use explicit `@RequestParam int page` / `int size` with `@PositiveOrZero` / `@Positive` / `@Max(100)`. Construct `PageRequest.of(page, size)` inside the method.
+- **Avoid `ResponseEntity<T>` as a return type.** Set response headers via `HttpServletResponse`. Use `@ResponseStatus` for fixed non-200 status codes. Only reach for `ResponseEntity` when the status must vary at runtime.
 
 ## Handoff
 
