@@ -14,4 +14,4 @@ You are editing under `.specs/`. These artifacts ARE the contract between phases
 - Never invent. If you lack info, append a `Q-NNN` and halt.
 - Don't edit a higher-numbered artifact while a lower-numbered one has unresolved `Q-NNN` or `request-changes` verdict.
 
-Apply skills: `shared/skills/ears-spec-authoring/SKILL.md`, `spring-task-decomposition/SKILL.md`, `requirements-traceability/SKILL.md`.
+Apply skills: `.windsurf/skills/ears-spec-authoring/SKILL.md`, `spring-task-decomposition/SKILL.md`, `requirements-traceability/SKILL.md`.

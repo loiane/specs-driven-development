@@ -10,12 +10,12 @@ Skills, templates, checklists, and prompt fragments live under `shared/`. Each p
 
 | Concept | Shared core | Claude Code | GitHub Copilot | Windsurf |
 |---|---|---|---|---|
-| Skill | `shared/skills/<name>/SKILL.md` | `.claude/skills/<name>/SKILL.md` (symlink/copy) | `.github/instructions/skill-<name>.instructions.md` (path-scoped) | `.windsurf/rules/skills/<name>.md` (model-decision activation) |
+| Skill | `skills/<name>/SKILL.md` | `.claude/skills/<name>/SKILL.md` (symlink/copy) | `.github/instructions/skill-<name>.instructions.md` (path-scoped) | `.windsurf/rules/skills/<name>.md` (model-decision activation) |
 | Agent | (concept) | `.claude/agents/<name>.md` (subagent) | `.github/chatmodes/<name>.chatmode.md` | `.windsurf/rules/agents/<name>.md` + invocation in workflow |
 | Slash command | (concept) | `.claude/commands/<name>.md` | `.github/prompts/<name>.prompt.md` | `.windsurf/workflows/<name>.md` |
 | Hook / guardrail | (concept) | `.claude/hooks/<name>.sh` + `.claude/settings.json` | `.github/instructions/guard-<name>.instructions.md` | `.windsurf/rules/guard-<name>.md` (always-on) |
-| Template | `shared/templates/<name>.template.md` | (read directly) | (read directly) | (read directly) |
-| Checklist | `shared/checklists/<name>.md` | (read directly) | (read directly) | (read directly) |
+| Template | `templates/<name>.template.md` | (read directly) | (read directly) | (read directly) |
+| Checklist | `checklists/<name>.md` | (read directly) | (read directly) | (read directly) |
 
 ## Tool/permission model
 
@@ -63,8 +63,8 @@ Issue-tracker integration uses MCP. The core `issue-tracker-ingestion` skill is 
 - **Copilot:** MCP servers configured via VS Code settings; the chatmode lists allowed `mcp_*` tools.
 - **Windsurf:** `.windsurf/mcp/` configuration files; the workflow whitelists relevant MCP servers.
 
-The agent runs `scripts/detect-stack.sh --mcp` at the start of `/spec` to enumerate available servers and pick one that matches the user's tracker.
+The agent runs `.github/scripts/detect-stack.sh --mcp` at the start of `/spec` to enumerate available servers and pick one that matches the user's tracker.
 
 ## Drift control
 
-A `scripts/sync-platforms.sh` (planned) regenerates `.claude/`, `.github/`, and `.windsurf/` wrappers from `shared/`. Until then, any change to `shared/skills/<name>/SKILL.md` must be propagated manually; CI lints for divergent copies.
+A `.github/scripts/sync-platforms.sh` (planned) regenerates `.claude/`, `.github/`, and `.windsurf/` wrappers from `shared/`. Until then, any change to `skills/<name>/SKILL.md` must be propagated manually; CI lints for divergent copies.

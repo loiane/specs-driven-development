@@ -1,15 +1,37 @@
 ---
-description: Run /spec-review — see shared/commands/spec-review.md for the authoritative spec.
+description: Run /spec-review — see .windsurf/workflows/spec-review.md for the authoritative spec.
 ---
+# /spec-review
 
-# /spec-review (Windsurf workflow wrapper)
+**Phase:** 2 — review
+**Owning agent:** `.windsurf/workflows/spring-spec-author.md` (review hat)
+**Skills used:** `ears-spec-authoring`, `requirements-traceability`
 
-Single source of truth: [`shared/commands/spec-review.md`](../../shared/commands/spec-review.md). Cascade must read it now.
+## Purpose
+Audit `01-spec.md` against the spec checklist and produce `02-spec-review.md` with a pass/fail verdict and a numbered list of required edits.
 
-## Behavior
+## Inputs
+- `<feature-id>` (positional). If omitted, use the most recently modified `.specs/<id>/`.
 
-1. Load `shared/commands/spec-review.md` and follow Process step-by-step.
-2. Adopt the role described in [`shared/agents/spring-spec-author.md`](../../shared/agents/spring-spec-author.md).
-3. The rules under `.windsurf/rules/*.md` apply automatically (always-on + glob-scoped). They cover the same ground as Claude's hooks: no skip flags, no production code without a failing test, no edits outside files_in_scope, no advancing past unresolved Q-NNN.
-4. Honor every `Refuse if` clause.
-5. Do not duplicate logic in this file; edit the shared spec instead.
+## Reads
+- `.specs/<feature-id>/01-spec.md`
+- `.windsurf/checklists/spec-review.md`
+- `.windsurf/templates/02-spec-review.md`
+
+## Writes
+- `.specs/<feature-id>/02-spec-review.md`
+
+## Process
+1. Walk every checklist item; for each, record `pass | fail | n/a` plus a one-line rationale.
+2. For each `fail`, write a concrete edit (line + replacement) the spec author must apply.
+3. Verify EARS form compliance for every AC.
+4. Verify each AC is independently testable (no compound criteria).
+5. Verify `## Open Questions` is empty before declaring overall verdict `PASS`.
+6. Emit summary: `verdict`, `acs_total`, `acs_failed`, `open_questions`, `next_command`.
+
+## Refuse if
+- `01-spec.md` does not exist.
+- Any `Q-NNN` is unresolved — verdict must be `FAIL` with the open question list quoted verbatim.
+
+## Done when
+`02-spec-review.md` exists. If verdict is `PASS`, point the user to `/plan`. If `FAIL`, point them back to editing `01-spec.md`.

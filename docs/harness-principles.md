@@ -6,7 +6,7 @@
 
 Generative agents are confident even when wrong. The only durable defense is a deterministic, layered harness that runs the same way every time and is parsed automatically by the agent before it claims a task is done. If a layer regresses, the agent must address it before progressing — not narrate around it.
 
-Hooks (Claude), guardrails (Copilot, Windsurf), and CI all invoke the **same** `scripts/harness.sh`. There is no second source of truth.
+Hooks (Claude), guardrails (Copilot, Windsurf), and CI all invoke the **same** `.github/scripts/harness.sh`. There is no second source of truth.
 
 ## Properties
 

@@ -1,18 +1,32 @@
 ---
-description: Run /help — see shared/commands/help.md for the authoritative spec.
-argument-hint: see shared/commands/help.md
+description: Run /help — see .claude/commands/help.md for the authoritative spec.
+argument-hint: see .claude/commands/help.md
 
 ---
+# /help
 
-# /help (Claude Code wrapper)
+**Phase:** meta — read-only
+**Owning agent:** none
 
-This file is a thin pointer. The single source of truth is
-[`shared/commands/help.md`](../../shared/commands/help.md). Read it before acting.
+## Purpose
+Print the command catalog and the recommended phase order. Optionally explain a single command in depth.
 
-## Behavior
+## Inputs
+- Optional `<command-name>` (without the leading slash).
 
-1. Load `shared/commands/help.md` and follow Process step-by-step.
+## Reads
+- `.claude/commands/`
+- `.claude/commands/<command-name>.md` if a name was supplied.
 
-3. Honor every `Refuse if` clause; do not proceed if any precondition fails.
-4. Respect the hooks under `.claude/hooks/` — they will block bypass attempts (skipped tests, edits outside files_in_scope, production code without a failing test, etc.).
-5. Do not duplicate command logic here; if the spec needs to change, edit the shared file.
+## Writes
+Nothing.
+
+## Process
+- No argument → print the table from `.claude/commands/` and the natural-language alias list.
+- With argument → print the contents of the matching shared command file (Purpose, Inputs, Reads, Writes, Process, Refuse if, Done when).
+
+## Refuse if
+Never.
+
+## Done when
+Help text is rendered.

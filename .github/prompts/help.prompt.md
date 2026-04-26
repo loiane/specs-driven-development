@@ -1,18 +1,33 @@
 ---
 mode: agent
-description: Run /help — see shared/commands/help.md for the authoritative spec.
+description: Run /help — see .github/prompts/help.prompt.md for the authoritative spec.
 
 
 ---
+# /help
 
-# /help (GitHub Copilot prompt wrapper)
+**Phase:** meta — read-only
+**Owning agent:** none
 
-Single source of truth: [`shared/commands/help.md`](../../shared/commands/help.md). Read it now.
+## Purpose
+Print the command catalog and the recommended phase order. Optionally explain a single command in depth.
 
-## Behavior
+## Inputs
+- Optional `<command-name>` (without the leading slash).
 
-1. Open `shared/commands/help.md` and execute its Process step-by-step.
+## Reads
+- `.github/commands/README.md`
+- `.github/prompts/<command-name>.prompt.md` if a name was supplied.
 
-3. Apply the path-scoped rules in `.github/instructions/*.instructions.md` automatically.
-4. Honor every `Refuse if` clause and ask the user to resolve preconditions before proceeding.
-5. Never edit this wrapper to change command behavior — edit the shared file.
+## Writes
+Nothing.
+
+## Process
+- No argument → print the table from `.github/commands/README.md` and the natural-language alias list.
+- With argument → print the contents of the matching shared command file (Purpose, Inputs, Reads, Writes, Process, Refuse if, Done when).
+
+## Refuse if
+Never.
+
+## Done when
+Help text is rendered.

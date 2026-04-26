@@ -1,18 +1,40 @@
 ---
 mode: agent
-description: Run /spec-review — see shared/commands/spec-review.md for the authoritative spec.
+description: Run /spec-review — see .github/prompts/spec-review.prompt.md for the authoritative spec.
 tools: ['codebase', 'editFiles', 'search', 'runCommands', 'runTests']
 model: GPT-5
 ---
+# /spec-review
 
-# /spec-review (GitHub Copilot prompt wrapper)
+**Phase:** 2 — review
+**Owning agent:** `.github/chatmodes/spring-spec-author.chatmode.md` (review hat)
+**Skills used:** `ears-spec-authoring`, `requirements-traceability`
 
-Single source of truth: [`shared/commands/spec-review.md`](../../shared/commands/spec-review.md). Read it now.
+## Purpose
+Audit `01-spec.md` against the spec checklist and produce `02-spec-review.md` with a pass/fail verdict and a numbered list of required edits.
 
-## Behavior
+## Inputs
+- `<feature-id>` (positional). If omitted, use the most recently modified `.specs/<id>/`.
 
-1. Open `shared/commands/spec-review.md` and execute its Process step-by-step.
-2. Adopt the persona and rules of [`shared/agents/spring-spec-author.md`](../../shared/agents/spring-spec-author.md) (Copilot chatmode wrapper at `.github/chatmodes/spring-spec-author.chatmode.md`).
-3. Apply the path-scoped rules in `.github/instructions/*.instructions.md` automatically.
-4. Honor every `Refuse if` clause and ask the user to resolve preconditions before proceeding.
-5. Never edit this wrapper to change command behavior — edit the shared file.
+## Reads
+- `.specs/<feature-id>/01-spec.md`
+- `.github/checklists/spec-review.md`
+- `.github/templates/02-spec-review.md`
+
+## Writes
+- `.specs/<feature-id>/02-spec-review.md`
+
+## Process
+1. Walk every checklist item; for each, record `pass | fail | n/a` plus a one-line rationale.
+2. For each `fail`, write a concrete edit (line + replacement) the spec author must apply.
+3. Verify EARS form compliance for every AC.
+4. Verify each AC is independently testable (no compound criteria).
+5. Verify `## Open Questions` is empty before declaring overall verdict `PASS`.
+6. Emit summary: `verdict`, `acs_total`, `acs_failed`, `open_questions`, `next_command`.
+
+## Refuse if
+- `01-spec.md` does not exist.
+- Any `Q-NNN` is unresolved — verdict must be `FAIL` with the open question list quoted verbatim.
+
+## Done when
+`02-spec-review.md` exists. If verdict is `PASS`, point the user to `/plan`. If `FAIL`, point them back to editing `01-spec.md`.
