@@ -22,6 +22,7 @@ in the wrappers.
 | Command          | Phase     | Owning agent           |
 |------------------|-----------|------------------------|
 | `/onboard`       | 0         | spring-onboarding      |
+| `/wire-harness`  | 0 (meta)  | spring-onboarding      |
 | `/spec`          | 1         | spring-spec-author     |
 | `/spec-review`   | 2         | spring-spec-author     |
 | `/plan`          | 3         | spring-architect       |

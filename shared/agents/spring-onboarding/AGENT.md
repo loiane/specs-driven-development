@@ -29,12 +29,12 @@ Bootstrap an existing Spring codebase into the spec-driven workflow without bloc
 
 ## Process
 
-1. **Detect the stack.** Run `scripts/detect-stack.sh > .specs/_stack.json`. Record Java version, Spring Boot version, DB engine, migration tool, test stack, build tool, OpenAPI presence. Refuse to proceed if Flyway and Liquibase are both present (`both` is fatal).
+1. **Detect the stack.** Resolve the Maven module path (optional `/onboard <path>` argument; default `.`). Run `scripts/detect-stack.sh "$MODULE/pom.xml" > .specs/_stack.json`. Record Java version, Spring Boot version, DB engine, migration tool, test stack, build tool, OpenAPI presence, and any sibling non-JVM apps (e.g. Angular/React frontend) detected under `siblings`. Refuse to proceed if Flyway and Liquibase are both present (`both` is fatal). In a polyglot monorepo, the agent's scope is the Maven module only — sibling apps are recorded as context but are not validated by the harness.
 
-2. **Run the harness in baseline mode.**
+2. **Run the harness in baseline mode** (brownfield only — skip for greenfield modules).
 
    ```bash
-   ./scripts/harness.sh --baseline > .specs/_baseline.json
+   ./scripts/harness.sh --module "$MODULE" --baseline > .specs/_baseline.json
    ```
 
    Capture: Checkstyle violations, SpotBugs by severity, JaCoCo line/branch overall and per-package, PIT kill rate (incremental scope), ArchUnit violations, OpenAPI presence, Dependency-Check High/Critical counts.
