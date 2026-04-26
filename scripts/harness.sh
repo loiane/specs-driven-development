@@ -10,6 +10,19 @@
 
 set -euo pipefail
 
+# Resolve the script's own directory BEFORE any cd, so --module works regardless
+# of relative invocation path.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Optional first arg: --module <path> to cd into a Maven module (multi-project repos).
+if [ "${1:-}" = "--module" ]; then
+  shift
+  MODULE_DIR="${1:-}"
+  shift || true
+  [ -d "$MODULE_DIR" ] || { echo "harness: module dir not found: $MODULE_DIR" >&2; exit 2; }
+  cd "$MODULE_DIR"
+fi
+
 MODE="${1:-run}"
 SUMMARY="target/harness-summary.json"
 mkdir -p target
@@ -18,7 +31,7 @@ mkdir -p target
 section() { echo "=== $* ==="; }
 
 # Detect stack so we know which layers to enforce.
-STACK_JSON="$(./scripts/detect-stack.sh 2>/dev/null || echo '{}')"
+STACK_JSON="$("$SCRIPT_DIR/detect-stack.sh" pom.xml 2>/dev/null || echo '{}')"
 
 has_layer() {
   echo "$STACK_JSON" | jq -r ".harness_layers.$1 // false"
@@ -67,28 +80,54 @@ parse_surefire() {
 parse_jacoco() {
   local f="target/site/jacoco/jacoco.xml"
   [ -f "$f" ] || { echo '{"status":"skipped"}'; return; }
-  local line_missed line_covered branch_missed branch_covered
-  line_missed=$(grep -E '<counter type="LINE"' "$f" | tail -n1 | grep -oE 'missed="[0-9]+"' | grep -oE '[0-9]+' || echo 0)
-  line_covered=$(grep -E '<counter type="LINE"' "$f" | tail -n1 | grep -oE 'covered="[0-9]+"' | grep -oE '[0-9]+' || echo 0)
-  branch_missed=$(grep -E '<counter type="BRANCH"' "$f" | tail -n1 | grep -oE 'missed="[0-9]+"' | grep -oE '[0-9]+' || echo 0)
-  branch_covered=$(grep -E '<counter type="BRANCH"' "$f" | tail -n1 | grep -oE 'covered="[0-9]+"' | grep -oE '[0-9]+' || echo 0)
-  local lt=$((line_missed+line_covered)); local bt=$((branch_missed+branch_covered))
-  local lr="0"; [ "$lt" -gt 0 ] && lr=$(awk "BEGIN{printf \"%.4f\", $line_covered/$lt}")
-  local br="0"; [ "$bt" -gt 0 ] && br=$(awk "BEGIN{printf \"%.4f\", $branch_covered/$bt}")
-  local status="pass"
-  awk "BEGIN{exit !($lr < 0.90 || $br < 0.90)}" && status="fail"
-  printf '{"status":"%s","line":%s,"branch":%s}' "$status" "$lr" "$br"
+  # Use python3 to parse XML properly — JaCoCo 0.8.x can write the entire
+  # report on a single line, which breaks chained grep pipelines.
+  local result
+  result=$(python3 - "$f" <<'PYEOF'
+import sys, xml.etree.ElementTree as ET
+tree = ET.parse(sys.argv[1])
+root = tree.getroot()
+# The last <counter type="LINE|BRANCH"> in document order is the report total.
+line_c = [(int(c.get('missed','0')), int(c.get('covered','0')))
+          for c in root.iter('counter') if c.get('type')=='LINE']
+branch_c = [(int(c.get('missed','0')), int(c.get('covered','0')))
+            for c in root.iter('counter') if c.get('type')=='BRANCH']
+lm, lc = line_c[-1] if line_c else (0, 0)
+bm, bc = branch_c[-1] if branch_c else (0, 0)
+lt = lm + lc; bt = bm + bc
+lr = lc / lt if lt > 0 else 0.0
+br = bc / bt if bt > 0 else 0.0
+status = "fail" if lr < 0.90 or br < 0.90 else "pass"
+print('{"status":"' + status + '","line":' + f'{lr:.4f}' + ',"branch":' + f'{br:.4f}' + '}')
+PYEOF
+  )
+  echo "$result"
 }
 
 parse_pit() {
   local f="target/pit-reports/mutations.xml"
   [ -f "$f" ] || { echo '{"status":"skipped"}'; return; }
-  local total survived
-  total=$(grep -c '<mutation ' "$f" || echo 0)
-  survived=$(grep -c 'status="SURVIVED"' "$f" || echo 0)
-  local kr="0"; [ "$total" -gt 0 ] && kr=$(awk "BEGIN{printf \"%.4f\", ($total-$survived)/$total}")
-  local status="pass"; [ "$survived" -gt 0 ] && status="warn"
-  printf '{"status":"%s","kill_rate":%s,"survived":%d,"total":%d}' "$status" "$kr" "$survived" "$total"
+  local result
+  result=$(python3 - "$f" <<'PYEOF'
+import sys, xml.etree.ElementTree as ET
+tree = ET.parse(sys.argv[1])
+root = tree.getroot()
+total = 0; killed = 0; survived = 0; no_cov = 0; timed_out = 0
+for m in root.iter('mutation'):
+    total += 1
+    s = m.get('status', '')
+    if s == 'KILLED':   killed += 1
+    elif s == 'SURVIVED': survived += 1
+    elif s == 'NO_COVERAGE': no_cov += 1
+    elif s == 'TIMED_OUT': timed_out += 1
+detected = killed + timed_out
+kr = detected / total if total > 0 else 0.0
+threshold = 0.75
+status = "pass" if kr >= threshold else "fail"
+print('{"status":"' + status + '","kill_rate":' + f'{kr:.4f}' + ',"killed":' + str(detected) + ',"survived":' + str(survived) + ',"no_coverage":' + str(no_cov) + ',"total":' + str(total) + '}')
+PYEOF
+  )
+  echo "$result"
 }
 
 unit=$(parse_surefire target/surefire-reports)
