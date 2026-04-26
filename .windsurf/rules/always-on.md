@@ -43,7 +43,7 @@ At the start of every session, read:
 
 Apply `shared/skills/spring-boot-4-conventions/SKILL.md`, `archunit-rules/SKILL.md`, `spring-security-baseline/SKILL.md`.
 
-Key rules: constructor injection only; package by feature/domain (not by layer); `@HttpExchange`/`RestClient` (no new `RestTemplate`); records for DTOs; `@MockitoBean` (not `@MockBean`); slice tests over `@SpringBootTest`; **no Lombok** in any new code.
+Key rules: constructor injection only; package by feature/domain (not by layer — top-level packages are bounded contexts with `api/` as published surface; DTOs go in `api/dto/`; domain exceptions go in `api/exception/`; controllers go directly in `api/`; private impl in `model/`, `repository/`, `service/` sub-packages — use typed sub-packages when a feature has multiple classes of the same type; cross-cutting exception handler lives in `shared/exception/`); `@HttpExchange`/`RestClient` (no new `RestTemplate`); records for DTOs; `@MockitoBean` (not `@MockBean`); slice tests over `@SpringBootTest`; **no Lombok** in any new code.
 
 ## Natural-language aliases
 
