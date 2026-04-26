@@ -24,7 +24,7 @@ The toolkit organizes feature delivery into **seven phases**. Each phase has:
 - **Phase-exit gate.** A phase cannot advance while `Q-NNN` items are unresolved, unless the user explicitly marks them `deferred` with a recorded rationale.
 - **Implementation invariant.** `spring-implementer` and `spring-test-engineer` refuse to act on tasks whose source AC or design section still references an unresolved `Q-NNN`.
 
-This is enforced by templates (`shared/templates/`), checklists (`shared/checklists/`), and the `block-progress-on-open-questions` hook.
+This is enforced by templates (`templates/`), checklists (`checklists/`), and the `block-progress-on-open-questions` hook.
 
 ## Phase 1 — Specify
 
@@ -35,7 +35,7 @@ This is enforced by templates (`shared/templates/`), checklists (`shared/checkli
 Steps:
 
 1. Ask the user whether the work originates from a Jira ticket, GitHub issue, Linear item, or other tracker.
-2. Detect available MCP servers (`scripts/detect-stack.sh --mcp`) and pull the source ticket via the appropriate MCP (Atlassian/Jira, GitHub `mcp_io_github_*`, Linear, Azure Boards, …). Record the source URL/ID in `## Source`.
+2. Detect available MCP servers (`.github/scripts/detect-stack.sh --mcp`) and pull the source ticket via the appropriate MCP (Atlassian/Jira, GitHub `mcp_io_github_*`, Linear, Azure Boards, …). Record the source URL/ID in `## Source`.
 3. Draft `01-spec.md` from the template:
    - `## Source` (ticket link, snapshot)
    - `## Goal` (one paragraph)
@@ -52,7 +52,7 @@ Steps:
 
 **Owner:** `spring-spec-author`
 **Artifact:** `02-spec-review.md`
-**Checklist:** `shared/checklists/spec-review.md`
+**Checklist:** `checklists/spec-review.md`
 
 Walks the spec against the spec-review checklist. Anything unclear becomes a new `Q-NNN` and bounces back to phase 1 for resolution before this phase exits.
 
@@ -128,7 +128,7 @@ Adds cross-cutting tests not tied to a single task:
 **Artifacts:** `07-validation-report.md`, `07a-traceability.md`
 **Skills:** `harness-report-parsing`, `requirements-traceability`, `jacoco-coverage-policy`, `pit-mutation-tuning`
 
-Runs `scripts/harness.sh` (same script as CI). Parses each layer's report, classifies failures (regression vs pre-existing baseline tracked in `.specs/_baseline.json`), and writes `07-validation-report.md`.
+Runs `.github/scripts/harness.sh` (same script as CI). Parses each layer's report, classifies failures (regression vs pre-existing baseline tracked in `.specs/_baseline.json`), and writes `07-validation-report.md`.
 
 Builds the **requirements traceability matrix** in `07a-traceability.md`:
 
@@ -181,7 +181,7 @@ Phase 8 is **optional** — teams that ship via a separate release pipeline may 
 
 ## Performance work
 
-Performance is treated as a cross-cutting concern, not a phase. Apply `shared/skills/performance-optimization/SKILL.md` whenever:
+Performance is treated as a cross-cutting concern, not a phase. Apply `skills/performance-optimization/SKILL.md` whenever:
 
 - Phase 3 (Plan) touches a hot path, a new query, a new external call, or anything with a stated SLO.
 - Phase 4 (Build) executes a task explicitly targeting performance.

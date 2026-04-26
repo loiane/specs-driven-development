@@ -1,15 +1,44 @@
 ---
-description: Run /spec — see shared/commands/spec.md for the authoritative spec.
+description: Run /spec — see .windsurf/workflows/spec.md for the authoritative spec.
 ---
+# /spec
 
-# /spec (Windsurf workflow wrapper)
+**Phase:** 1 — specify
+**Owning agent:** `.windsurf/workflows/spring-spec-author.md`
+**Skills used:** `ears-spec-authoring`, `issue-tracker-ingestion`, `requirements-traceability`
 
-Single source of truth: [`shared/commands/spec.md`](../../shared/commands/spec.md). Cascade must read it now.
+## Purpose
+Turn raw intent (a sentence, a paragraph, or a ticket URL) into a complete EARS-style specification at `.specs/<feature-id>/01-spec.md`.
 
-## Behavior
+## Inputs
+Either:
+- Free text describing the feature, OR
+- A ticket reference (`JIRA-123`, GitHub issue URL, Linear ID, Azure work item URL).
 
-1. Load `shared/commands/spec.md` and follow Process step-by-step.
-2. Adopt the role described in [`shared/agents/spring-spec-author.md`](../../shared/agents/spring-spec-author.md).
-3. The rules under `.windsurf/rules/*.md` apply automatically (always-on + glob-scoped). They cover the same ground as Claude's hooks: no skip flags, no production code without a failing test, no edits outside files_in_scope, no advancing past unresolved Q-NNN.
-4. Honor every `Refuse if` clause.
-5. Do not duplicate logic in this file; edit the shared spec instead.
+If a ticket is supplied, fetch it via the configured MCP server (see `.windsurf/skills/issue-tracker-ingestion/SKILL.md`) and treat its body as the source.
+
+## Reads
+- The supplied text or ticket.
+- `.specs/_onboarding.md` (for stack context).
+- `.windsurf/templates/01-spec.md`.
+- `.windsurf/checklists/spec-review.md` (so the spec is born review-ready).
+
+## Writes
+- `.specs/<feature-id>/01-spec.md` (feature-id = kebab-case slug derived from the title, prefixed with date `YYYY-MM-DD-`).
+
+## Process
+1. Derive `<feature-id>`. Refuse if a folder with that id already exists unless the user passes `--continue`.
+2. Extract: business goal, primary actor, in-scope, explicitly-out-of-scope.
+3. Write acceptance criteria as `AC-001`, `AC-002`, ... using strict EARS forms (Ubiquitous, Event-driven, State-driven, Unwanted-behavior, Optional). Every AC must be testable.
+4. List non-functional requirements (latency, throughput, security, observability) with concrete numbers. If unknown, file an `Open Question` instead of guessing.
+5. Capture `Open Questions` as `Q-001`, `Q-002`. **Never invent answers.** Stop and surface the questions to the user.
+6. Render the file using `.windsurf/templates/01-spec.md`.
+
+## Refuse if
+- The input has fewer than 3 distinct nouns/verbs (likely too vague — ask the user to expand).
+- Any acceptance criterion would require unstated assumptions.
+
+## Done when
+- `01-spec.md` exists with at least one AC and zero invented answers.
+- All ambiguities are listed under `## Open Questions` with `Q-NNN` IDs.
+- The user has been told the next command is `/spec-review` (after they answer any Q-NNN).

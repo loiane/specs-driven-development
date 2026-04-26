@@ -1,18 +1,42 @@
 ---
 mode: agent
-description: Run /validate — see shared/commands/validate.md for the authoritative spec.
+description: Run /validate — see .github/prompts/validate.prompt.md for the authoritative spec.
 tools: ['codebase', 'editFiles', 'search', 'runCommands', 'runTests']
 model: GPT-5
 ---
+# /validate
 
-# /validate (GitHub Copilot prompt wrapper)
+**Phase:** 5 — validate (run the harness)
+**Owning agent:** `.github/chatmodes/spring-validator.chatmode.md`
+**Skills used:** `harness-report-parsing`, `jacoco-coverage-policy`, `pit-mutation-tuning`, `requirements-traceability`, `archunit-rules`
 
-Single source of truth: [`shared/commands/validate.md`](../../shared/commands/validate.md). Read it now.
+## Purpose
+Run the full 10-layer harness, parse the output, and write `07-validation-report.md` with a single `PASS` / `FAIL` verdict.
 
-## Behavior
+## Inputs
+- `<feature-id>` (optional; if omitted, reports across all changes since `origin/main`).
 
-1. Open `shared/commands/validate.md` and execute its Process step-by-step.
-2. Adopt the persona and rules of [`shared/agents/spring-validator.md`](../../shared/agents/spring-validator.md) (Copilot chatmode wrapper at `.github/chatmodes/spring-validator.chatmode.md`).
-3. Apply the path-scoped rules in `.github/instructions/*.instructions.md` automatically.
-4. Honor every `Refuse if` clause and ask the user to resolve preconditions before proceeding.
-5. Never edit this wrapper to change command behavior — edit the shared file.
+## Reads
+- `.github/scripts/harness.sh`, `.github/scripts/check-new-code-coverage.sh`, `.github/scripts/traceability.sh`.
+- `target/harness-summary.json` (after the run).
+- `01-spec.md`, `04-tasks.md`, `06-test-plan.md` (for AC mapping).
+
+## Writes
+- `.specs/<feature-id>/07-validation-report.md`
+- `.specs/<feature-id>/07a-traceability.md` (regenerated)
+- `target/harness-summary.json`, `target/new-code-coverage.json`
+
+## Process
+1. Run `.github/scripts/harness.sh --report > /dev/null` (writes `target/harness-summary.json`).
+2. Run `.github/scripts/check-new-code-coverage.sh` (must be ≥ 95% on changed lines).
+3. Run `.github/scripts/traceability.sh <feature-id>`. Any AC with zero tests = FAIL.
+4. Aggregate the 10 gates plus the new-code-coverage and traceability checks. Verdict is `PASS` only if every gate is `pass` (mutation may be `warn` if explicitly justified in the report).
+5. Write `07-validation-report.md` with: verdict, gate table, top failing items, links to artifacts, recommended next action.
+
+## Refuse if
+- `04-tasks.md` shows any task not `done`.
+- The harness was bypassed (e.g. local cache showed stale results) — always re-run.
+- `forbid-skip-flags.sh` would have blocked the underlying Maven invocation.
+
+## Done when
+`07-validation-report.md` exists with a clear verdict. If `PASS`, point the user to `/review`. If `FAIL`, list the smallest set of `/build` or `/test` actions needed to recover.

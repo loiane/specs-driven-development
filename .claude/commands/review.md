@@ -1,18 +1,40 @@
 ---
-description: Run /review — see shared/commands/review.md for the authoritative spec.
-argument-hint: see shared/commands/review.md
+description: Run /review — see .claude/commands/review.md for the authoritative spec.
+argument-hint: see .claude/commands/review.md
 agent: spring-code-reviewer
 ---
+# /review
 
-# /review (Claude Code wrapper)
+**Phase:** 6 — pre-commit code review
+**Owning agent:** `.claude/agents/spring-code-reviewer.md`
+**Skills used:** `spring-code-review-rubric`, `clarity-over-cleverness`, `spring-boot-4-conventions`, `spring-security-baseline`, `performance-optimization`
 
-This file is a thin pointer. The single source of truth is
-[`shared/commands/review.md`](../../shared/commands/review.md). Read it before acting.
+## Purpose
+Run a structured self-review of the diff before the user commits. Produces `08-code-review.md` with categorized findings.
 
-## Behavior
+## Inputs
+- `<feature-id>` (optional). Defaults to the most recent feature.
+- Optional `--base <ref>` (defaults to `origin/main`).
 
-1. Load `shared/commands/review.md` and follow Process step-by-step.
-2. Delegate to `shared/agents/spring-code-reviewer.md` (already wrapped at `.claude/agents/spring-code-reviewer.md`).
-3. Honor every `Refuse if` clause; do not proceed if any precondition fails.
-4. Respect the hooks under `.claude/hooks/` — they will block bypass attempts (skipped tests, edits outside files_in_scope, production code without a failing test, etc.).
-5. Do not duplicate command logic here; if the spec needs to change, edit the shared file.
+## Reads
+- `git diff <base>...HEAD` for changed Java/test/POM/SQL files.
+- `01-spec.md`, `03-design.md`, `07-validation-report.md`.
+- `.claude/skills/spring-code-review-rubric/SKILL.md` (the rubric is authoritative).
+
+## Writes
+- `.specs/<feature-id>/08-code-review.md`.
+
+## Process
+1. Refuse if `07-validation-report.md` verdict is not `PASS`.
+2. Walk every changed file. For each, evaluate against the rubric categories: correctness, security, design, testing, observability, performance, clarity, conventions.
+3. Classify findings as `must-fix`, `should-fix`, `nit`, or `praise`. Include file + line range + suggested change for `must-fix` and `should-fix`.
+4. Cross-check: every AC mentioned in `01-spec.md` is exercised by at least one test in the diff (or already merged).
+5. If any `must-fix` exists, recommend `/build` or `/code-simplify`. Do NOT auto-apply fixes.
+6. Emit summary line: counts by severity + recommended next action.
+
+## Refuse if
+- Validation report is missing or `FAIL`.
+- The diff is empty.
+
+## Done when
+`08-code-review.md` exists. If zero `must-fix`, the agent prints the suggested commit message and tells the user to run `git commit` themselves (the agent never commits).
