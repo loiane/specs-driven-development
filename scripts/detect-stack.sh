@@ -17,7 +17,7 @@ get_prop() { sed -n "s|.*<$1>\\(.*\\)</$1>.*|\\1|p" "$POM" | head -n 1; }
 
 java_version="$(get_prop 'java.version')"
 boot_version="$(get_prop 'spring-boot.version')"
-[ -z "$boot_version" ] && boot_version="$(grep -A1 '<artifactId>spring-boot-starter-parent</artifactId>' "$POM" | sed -n 's|.*<version>\\(.*\\)</version>.*|\\1|p' | head -n 1)"
+[ -z "$boot_version" ] && boot_version="$( { grep -A1 '<artifactId>spring-boot-starter-parent</artifactId>' "$POM" || true; } | sed -n 's|.*<version>\(.*\)</version>.*|\1|p' | head -n 1)"
 
 # DB engines
 db_engines=()
@@ -40,8 +40,8 @@ elif $liquibase || $liquibase_dir; then
   migration="liquibase"
 fi
 
-testcontainers=$(has_dep 'testcontainers' && echo true || echo false)
-junit5=$(has_dep 'junit-jupiter' && echo true || echo false)
+testcontainers=$(grep -Eq '<artifactId>(testcontainers|spring-boot-testcontainers|testcontainers-[a-z0-9-]+)</artifactId>' "$POM" && echo true || echo false)
+junit5=$(grep -Eq '<artifactId>(junit-jupiter|spring-boot-starter-test|spring-boot-starter-webmvc-test|spring-boot-starter-webflux-test)</artifactId>' "$POM" && echo true || echo false)
 archunit=$(has_dep 'archunit' && echo true || echo false)
 springdoc=$(has_dep 'springdoc-openapi-starter-webmvc-ui' && echo true || echo false)
 openapi_spec=$([ -f src/main/resources/openapi/openapi.yaml ] && echo true || echo false)
@@ -52,9 +52,31 @@ jacoco=$(has_dep 'jacoco-maven-plugin' && echo true || echo false)
 pit=$(has_dep 'pitest-maven' && echo true || echo false)
 depcheck=$(has_dep 'dependency-check-maven' && echo true || echo false)
 
+# Multi-project siblings: detect non-JVM apps next to the Maven module so the
+# onboarding artifact can record them as context (frontend, infra, etc.).
+ROOT_DIR="$(dirname "$(cd "$(dirname "$POM")" && pwd)")"
+MODULE_DIR="$(cd "$(dirname "$POM")" && pwd)"
+siblings=()
+if [ -d "$ROOT_DIR" ] && [ "$ROOT_DIR" != "$MODULE_DIR" ]; then
+  for d in "$ROOT_DIR"/*/; do
+    [ -d "$d" ] || continue
+    name="$(basename "$d")"
+    [ "$d" = "$MODULE_DIR/" ] && continue
+    case "$name" in .*|target|node_modules) continue;; esac
+    kind=""
+    [ -f "$d/package.json" ] && kind="node"
+    [ -f "$d/angular.json" ] && kind="angular"
+    [ -f "$d/pom.xml" ] && kind="maven"
+    [ -f "$d/build.gradle" ] || [ -f "$d/build.gradle.kts" ] && kind="${kind:-gradle}"
+    [ -n "$kind" ] && siblings+=("{\"name\":\"$name\",\"kind\":\"$kind\"}")
+  done
+fi
+
 # Emit
 cat <<EOF
 {
+  "module_path": "${MODULE_DIR#$ROOT_DIR/}",
+  "siblings": [$(IFS=,; echo "${siblings[*]:-}")],
   "java_version": "${java_version:-unknown}",
   "spring_boot_version": "${boot_version:-unknown}",
   "db_engines": [$(printf '"%s",' "${db_engines[@]}" | sed 's/,$//')],

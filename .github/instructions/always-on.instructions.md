@@ -41,7 +41,7 @@ You are working in a workspace that uses the spec-driven workflow defined in `do
 
 Apply `shared/skills/spring-boot-4-conventions/SKILL.md`:
 - Constructor injection only (no `@Autowired` on fields).
-- Package by feature/domain, not by layer (top-level packages are bounded contexts with `api`/`internal` sub-packages).
+- Package by feature/domain, not by layer (top-level packages are bounded contexts with `api/` as published surface; DTOs go in `api/dto/`; domain exceptions go in `api/exception/`; controllers go directly in `api/`; private impl in `model/`, `repository/`, `service/` sub-packages — use typed sub-packages when a feature has multiple classes of the same type; cross-cutting exception handler lives in `shared/exception/`).
 - `@HttpExchange` / `RestClient` for outbound HTTP (no new `RestTemplate`).
 - Records for DTOs.
 - `@MockitoBean` (not deprecated `@MockBean`).

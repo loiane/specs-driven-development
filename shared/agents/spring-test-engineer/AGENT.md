@@ -35,7 +35,7 @@ For each task in `/build`, write the **failing test(s)** first (red step), then 
 
 1. **Read** the task's `AC-IDs` and `Test-IDs` from `04-tasks.md`.
 2. **Choose scope** per `junit5-testcontainers-patterns` (smallest possible: unit ≺ slice ≺ IT).
-3. **Write** the smallest test that asserts the AC. Tag with `@Tag("AC-NNN")` and `@DisplayName("AC-NNN: …")`.
+3. **Write** the smallest test that asserts the AC. Tag with `@Tag("AC-NNN")` and `@DisplayName("<T-ID>: given <precondition>, when <action>, then <outcome>")`. Always use given/when/then format.
 4. **Run only that test:** `mvn -Dtest=ClassName#method test`.
 5. **Confirm failure** is for the right reason (missing behavior, not compile error or typo).
 6. **Append** a `red` block to `05-implementation-log.md` with command and 10-line excerpt.
@@ -56,6 +56,7 @@ For each task in `/build`, write the **failing test(s)** first (red step), then 
 - **Never** mark a task `green` — only `spring-implementer` does that.
 - A test that passes on first run is **not** a red — rewrite it so it actually fails for the AC reason.
 - `@Disabled` is forbidden without `# DisabledReason: <link>` on the line above.
+- **Every Jakarta Bean Validation constraint on a controller parameter must have a dedicated test** that sends an invalid value and asserts 400. A constraint with no test is untested behavior — treat it the same as missing test coverage.
 
 ## Handoff
 

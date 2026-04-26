@@ -26,9 +26,10 @@ authoritative_references:
 
 ## Naming + traceability
 
-- `@DisplayName("AC-007: rejects expired gift card with 4xx")`
+- `@DisplayName("AC-007: given expired gift card, when applied, then returns 4xx")` — always use **given/when/then** format
 - `@Tag("AC-007")` (machine-readable for traceability matrix)
 - One AC per test method when feasible.
+- Pattern: `"<T-ID>: given <precondition>, when <action>, then <outcome>"`
 
 ## Testcontainers with `@ServiceConnection` (Spring Boot 4)
 
@@ -43,7 +44,7 @@ class GiftCardRepositoryTest {
     @Autowired GiftCardRepository repo;
 
     @Test
-    @DisplayName("AC-004: persists remaining balance across reads")
+    @DisplayName("AC-004: given a new gift card, when saved and reloaded, then balance is preserved")
     @Tag("AC-004")
     void persistsBalance() {
         var saved = repo.save(GiftCard.with(BigDecimal.valueOf(100)));
@@ -81,7 +82,7 @@ class CheckoutControllerTest {
     @MockitoBean CheckoutService service;
 
     @Test
-    @DisplayName("AC-003: 404 when order does not exist")
+    @DisplayName("AC-003: given unknown order id, when GET /{id}, then returns 404")
     @Tag("AC-003")
     void unknownOrder() throws Exception {
         when(service.applyGiftCard(any(), any())).thenThrow(OrderNotFound.class);
@@ -109,3 +110,11 @@ Use Spring Boot 4's `@MockitoBean` (replaces deprecated `@MockBean`).
 - `@Disabled` without a `# DisabledReason: <ticket-or-ADR-link>` comment on the line above.
 - Removing assertions to make a test pass.
 - Catching `Exception` and asserting nothing.
+
+## Spring MVC Test 7 — deprecated APIs (do not use)
+
+| Deprecated | Replacement | Reason |
+|---|---|---|
+| `status().isUnprocessableEntity()` | `status().is(422)` | Removed in Spring MVC Test 7.0 |
+| `new MappingJackson2HttpMessageConverter()` in `standaloneSetup` | Remove the `.setMessageConverters()` call entirely | `MappingJackson2HttpMessageConverter` is removed in Spring 7; `standaloneSetup` auto-registers Jackson from the classpath — no explicit converter needed |
+| `@MockBean` | `@MockitoBean` | Deprecated in Spring Boot 4; import from `org.springframework.test.context.bean.override.mockito` |
