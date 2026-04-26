@@ -34,7 +34,7 @@ jobs:
       - name: Shellcheck scripts
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
-          shellcheck scripts/*.sh
+          shellcheck .github/scripts/*.sh
 
       - name: Validate YAML files
         run: |
@@ -60,28 +60,39 @@ jobs:
           done < <(find . -name '*.md' -not -path './.git/*')
           exit "$error"
 
-      - name: Verify shared skill and agent structure
+      - name: Verify IDE skill and agent structure
         run: |
           error=0
-          # Every shared skill must have a SKILL.md
-          for dir in shared/skills/*/; do
-            if [ ! -f "$dir/SKILL.md" ]; then
+          # Every .claude skill must have a SKILL.md
+          for dir in .claude/skills/*/; do
+            if [ ! -f "${dir}SKILL.md" ]; then
               echo "::error::Missing SKILL.md in $dir"
               error=1
             fi
           done
-          # Every shared agent must have an AGENT.md
-          for dir in shared/agents/*/; do
-            if [ ! -f "$dir/AGENT.md" ]; then
-              echo "::error::Missing AGENT.md in $dir"
+          # Every .github skill must have a SKILL.md
+          for dir in .github/skills/*/; do
+            if [ ! -f "${dir}SKILL.md" ]; then
+              echo "::error::Missing SKILL.md in $dir"
               error=1
             fi
           done
-          # Every .claude skill wrapper must point to a shared skill
-          for dir in .claude/skills/*/; do
-            name="$(basename "$dir")"
-            if [ ! -d "shared/skills/$name" ]; then
-              echo "::error::.claude/skills/$name has no matching shared/skills/$name"
+          # Every .windsurf skill must have a SKILL.md
+          for dir in .windsurf/skills/*/; do
+            if [ ! -f "${dir}SKILL.md" ]; then
+              echo "::error::Missing SKILL.md in $dir"
+              error=1
+            fi
+          done
+          # Every .claude agent wrapper must have a matching .github chatmode and .windsurf workflow
+          for f in .claude/agents/*.md; do
+            name="$(basename "$f" .md)"
+            if [ ! -f ".github/chatmodes/${name}.chatmode.md" ]; then
+              echo "::error::Missing .github/chatmodes/${name}.chatmode.md"
+              error=1
+            fi
+            if [ ! -f ".windsurf/workflows/${name}.md" ]; then
+              echo "::error::Missing .windsurf/workflows/${name}.md"
               error=1
             fi
           done

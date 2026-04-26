@@ -7,7 +7,7 @@
       "Glob",
       "Grep",
       "Bash(mvn *)",
-      "Bash(./scripts/*)",
+      "Bash(./.github/scripts/*)",
       "Bash(git diff *)",
       "Bash(git log *)",
       "Bash(git status)",

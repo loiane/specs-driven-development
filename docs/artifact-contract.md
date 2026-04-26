@@ -28,7 +28,7 @@ Every feature produces these files, in order. Phase advance is gated on the prio
 
 ## Templates
 
-Each artifact starts from the matching template under `shared/templates/`:
+Each artifact starts from the matching template under `templates/`:
 
 | Artifact | Template |
 |---|---|

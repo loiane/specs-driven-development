@@ -1,15 +1,30 @@
 ---
-description: Run /help — see shared/commands/help.md for the authoritative spec.
+description: Run /help — see .windsurf/workflows/help.md for the authoritative spec.
 ---
+# /help
 
-# /help (Windsurf workflow wrapper)
+**Phase:** meta — read-only
+**Owning agent:** none
 
-Single source of truth: [`shared/commands/help.md`](../../shared/commands/help.md). Cascade must read it now.
+## Purpose
+Print the command catalog and the recommended phase order. Optionally explain a single command in depth.
 
-## Behavior
+## Inputs
+- Optional `<command-name>` (without the leading slash).
 
-1. Load `shared/commands/help.md` and follow Process step-by-step.
+## Reads
+- `.windsurf/commands/README.md`
+- `.windsurf/workflows/<command-name>.md` if a name was supplied.
 
-3. The rules under `.windsurf/rules/*.md` apply automatically (always-on + glob-scoped). They cover the same ground as Claude's hooks: no skip flags, no production code without a failing test, no edits outside files_in_scope, no advancing past unresolved Q-NNN.
-4. Honor every `Refuse if` clause.
-5. Do not duplicate logic in this file; edit the shared spec instead.
+## Writes
+Nothing.
+
+## Process
+- No argument → print the table from `.windsurf/commands/README.md` and the natural-language alias list.
+- With argument → print the contents of the matching shared command file (Purpose, Inputs, Reads, Writes, Process, Refuse if, Done when).
+
+## Refuse if
+Never.
+
+## Done when
+Help text is rendered.

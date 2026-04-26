@@ -5,10 +5,10 @@ name: harness
 # Copy this file into your Spring Boot project's .github/workflows/.
 # It runs the EXACT same scripts the local agent runs, so a passing local
 # /validate equals a passing CI build (modulo flakes). If this workflow
-# diverges from `scripts/harness.sh`, the local agents are wrong about
+# diverges from `.github/scripts/harness.sh`, the local agents are wrong about
 # what "passes". Keep parity ruthlessly.
 #
-# Prerequisites: pom.xml at repo root, scripts/ from the toolkit.
+# Prerequisites: pom.xml at repo root, .github/scripts/ from the toolkit.
 
 on:
   push:
@@ -50,11 +50,11 @@ jobs:
           if ! command -v jq >/dev/null; then sudo apt-get update && sudo apt-get install -y jq; fi
 
       - name: Make harness scripts executable
-        run: chmod +x scripts/*.sh
+        run: chmod +x .github/scripts/*.sh
 
       - name: Detect stack
         run: |
-          ./scripts/detect-stack.sh | tee target-stack.json
+          ./.github/scripts/detect-stack.sh | tee target-stack.json
           mkdir -p .specs
           cp target-stack.json .specs/_stack.json
           if jq -e '.migration == "both"' target-stack.json >/dev/null; then
@@ -63,14 +63,14 @@ jobs:
           fi
 
       - name: Run harness (10 layers)
-        run: ./scripts/harness.sh --report > target/harness-summary.json
+        run: ./.github/scripts/harness.sh --report > target/harness-summary.json
         env:
           MAVEN_OPTS: -Xmx2g
           TESTCONTAINERS_REUSE_ENABLE: 'true'
 
       - name: New-code coverage gate
         run: |
-          BASE_REF=origin/${{ github.base_ref || 'main' }} ./scripts/check-new-code-coverage.sh
+          BASE_REF=origin/${{ github.base_ref || 'main' }} ./.github/scripts/check-new-code-coverage.sh
 
       - name: Traceability matrix (per active feature)
         run: |
@@ -78,7 +78,7 @@ jobs:
             [ -d "$spec_dir" ] || continue
             id="$(basename "$spec_dir")"
             [[ "$id" == _* ]] && continue   # skip _onboarding, _stack, etc.
-            ./scripts/traceability.sh "$id" || true
+            ./.github/scripts/traceability.sh "$id" || true
           done
 
       - name: Upload harness summary
