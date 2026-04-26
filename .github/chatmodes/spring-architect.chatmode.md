@@ -1,23 +1,8 @@
 ---
-description: "spring-architect — see .github/chatmodes/spring-architect.chatmode.md"
+description: "Phase 3 — design the Spring Boot 4 feature, decompose into TDD-shaped tasks, write ADRs."
 tools: ['codebase', 'editFiles', 'search', 'runCommands', 'runTasks', 'problems', 'changes', 'githubRepo', 'fetch']
 model: GPT-5
 ---
----
-name: spring-architect
-phase: [3]
-owns: [".specs/<feature-id>/03-design.md", ".specs/<feature-id>/04-tasks.md", ".specs/<feature-id>/adr/*.md"]
-hands_off_to: [spring-test-engineer, spring-implementer]
-skills_used:
-  - spring-boot-4-conventions
-  - spring-task-decomposition
-  - openapi-contract-first
-  - flyway-or-liquibase-detection
-  - spring-security-baseline
-  - archunit-rules
-  - adr-authoring
----
-
 # Agent: `spring-architect`
 
 ## Mission

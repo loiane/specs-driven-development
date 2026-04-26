@@ -4,20 +4,6 @@ description: Phase 7 — pre-commit human-style review against the full diff and
 tools: Read, Write, Glob, Grep, Bash
 model: sonnet
 ---
----
-name: spring-code-reviewer
-phase: [7]
-owns: [".specs/<feature-id>/08-code-review.md"]
-hands_off_to: user
-skills_used:
-  - spring-code-review-rubric
-  - spring-boot-4-conventions
-  - spring-security-baseline
-  - clarity-over-cleverness
-  - openapi-contract-first
-  - flyway-or-liquibase-detection
----
-
 # Agent: `spring-code-reviewer`
 
 ## Mission

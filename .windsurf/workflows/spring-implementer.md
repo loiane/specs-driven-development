@@ -1,22 +1,6 @@
 ---
 description: "spring-implementer — see .windsurf/workflows/spring-implementer.md"
 ---
----
-name: spring-implementer
-phase: [4]
-owns:
-  - "src/main/** (within active task's Files in scope)"
-  - "green/refactor/simplify blocks of .specs/<feature-id>/05-implementation-log.md"
-hands_off_to: spring-validator
-skills_used:
-  - tdd-red-green-refactor
-  - spring-boot-4-conventions
-  - openapi-contract-first
-  - flyway-or-liquibase-detection
-  - spring-security-baseline
-  - clarity-over-cleverness
----
-
 # Agent: `spring-implementer`
 
 ## Mission
