@@ -1,18 +1,40 @@
 ---
 mode: agent
-description: Run /status — see shared/commands/status.md for the authoritative spec.
+description: Run /status — see .github/prompts/status.prompt.md for the authoritative spec.
 
 
 ---
+# /status
 
-# /status (GitHub Copilot prompt wrapper)
+**Phase:** meta — read-only
+**Owning agent:** none (pure reporting)
 
-Single source of truth: [`shared/commands/status.md`](../../shared/commands/status.md). Read it now.
+## Purpose
+Show the user where every active feature stands. No writes, no side effects.
 
-## Behavior
+## Inputs
+- Optional `<feature-id>`; without it, summarize all features under `.specs/`.
 
-1. Open `shared/commands/status.md` and execute its Process step-by-step.
+## Reads
+- `.specs/*/01-spec.md`, `02-spec-review.md`, `03-design.md`, `04-tasks.md`, `.tdd-state.json`, `07-validation-report.md`.
+- `target/harness-summary.json` if present.
 
-3. Apply the path-scoped rules in `.github/instructions/*.instructions.md` automatically.
-4. Honor every `Refuse if` clause and ask the user to resolve preconditions before proceeding.
-5. Never edit this wrapper to change command behavior — edit the shared file.
+## Writes
+Nothing.
+
+## Process
+For each feature (or the supplied one), produce a one-row-per-feature table:
+- `feature_id`
+- `phase` — derived from which artifacts exist + verdicts (specify, spec-review, plan, build, test, validate, review, done).
+- `acs_total`, `acs_with_tests`
+- `tasks_done / tasks_total`
+- `last_validate_verdict` and timestamp
+- `active_task` from `.tdd-state.json` (if any) and its current `phase`
+
+Then print a single sentence: "Recommended next action: …".
+
+## Refuse if
+Never. This command never refuses; if data is missing it shows `—`.
+
+## Done when
+Status table is printed and a recommended next command is suggested.

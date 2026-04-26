@@ -1,18 +1,45 @@
 ---
-description: Run /code-simplify — see shared/commands/code-simplify.md for the authoritative spec.
-argument-hint: see shared/commands/code-simplify.md
+description: Run /code-simplify — see .claude/commands/code-simplify.md for the authoritative spec.
+argument-hint: see .claude/commands/code-simplify.md
 agent: spring-code-reviewer
 ---
+# /code-simplify
 
-# /code-simplify (Claude Code wrapper)
+**Phase:** 6 (meta) — clarity sweep
+**Owning agent:** `.claude/agents/spring-code-reviewer.md`
+**Skills used:** `clarity-over-cleverness`, `tdd-red-green-refactor`
 
-This file is a thin pointer. The single source of truth is
-[`shared/commands/code-simplify.md`](../../shared/commands/code-simplify.md). Read it before acting.
+## Purpose
+Apply the clarity-over-cleverness rules to a single file or a directory while keeping tests green. This is the same pass `/build`'s simplify phase performs, but on demand.
 
-## Behavior
+## Inputs
+- `<path>` (positional). A file under `src/main/**` or a directory.
+- Optional `--dry-run` to print proposed edits without writing.
 
-1. Load `shared/commands/code-simplify.md` and follow Process step-by-step.
-2. Delegate to `shared/agents/spring-code-reviewer.md` (already wrapped at `.claude/agents/spring-code-reviewer.md`).
-3. Honor every `Refuse if` clause; do not proceed if any precondition fails.
-4. Respect the hooks under `.claude/hooks/` — they will block bypass attempts (skipped tests, edits outside files_in_scope, production code without a failing test, etc.).
-5. Do not duplicate command logic here; if the spec needs to change, edit the shared file.
+## Reads
+- `<path>` (the target file/directory).
+- `.claude/skills/clarity-over-cleverness/SKILL.md` (authoritative checklist).
+
+## Writes
+- The targeted files (in place).
+- A diff summary appended to `.specs/<feature-id>/05-implementation-log.md` under a `### simplify-pass` block, or to a fresh `clarity-pass-<date>.md` if no active feature.
+
+## Process
+1. Refuse if `mvn test` is not green right now (run it first; abort on failure).
+2. For each file in scope, apply the 7 rewrite targets in order:
+   1. Untangle nested ternaries → if/else.
+   2. Streams only when clearer than a loop; otherwise loop.
+   3. Inline once-used helpers.
+   4. Kill option flags (split into two methods).
+   5. Name domain concepts (no `data`, `info`, `manager`, `helper`, `util`).
+   6. Remove premature abstraction (interface with one impl, factory with one product).
+   7. Prefer early returns over deep nesting.
+3. Re-run `mvn test` after each file. If anything goes red, revert that file's edits and record it as a Skipped item.
+4. Emit a summary: files touched, rewrites applied per category, tests run, regressions encountered.
+
+## Refuse if
+- Tests are not green at start.
+- The path is under `src/test/**` (test clarity is governed by `/test`, not this command).
+
+## Done when
+All in-scope files are either simplified or explicitly skipped, and tests are green.

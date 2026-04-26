@@ -1,18 +1,50 @@
 ---
-description: Run /plan — see shared/commands/plan.md for the authoritative spec.
-argument-hint: see shared/commands/plan.md
+description: Run /plan — see .claude/commands/plan.md for the authoritative spec.
+argument-hint: see .claude/commands/plan.md
 agent: spring-architect
 ---
+# /plan
 
-# /plan (Claude Code wrapper)
+**Phase:** 3 — plan
+**Owning agent:** `.claude/agents/spring-architect.md`
+**Skills used:** `spring-task-decomposition`, `spring-boot-4-conventions`, `openapi-contract-first`, `flyway-or-liquibase-detection`, `archunit-rules`, `adr-authoring`, `performance-optimization`
 
-This file is a thin pointer. The single source of truth is
-[`shared/commands/plan.md`](../../shared/commands/plan.md). Read it before acting.
+## Purpose
+Translate a `PASS`-verdict spec into a design (`03-design.md`) and a task list (`04-tasks.md`), then initialize `.tdd-state.json`.
 
-## Behavior
+## Inputs
+- `<feature-id>`.
 
-1. Load `shared/commands/plan.md` and follow Process step-by-step.
-2. Delegate to `shared/agents/spring-architect.md` (already wrapped at `.claude/agents/spring-architect.md`).
-3. Honor every `Refuse if` clause; do not proceed if any precondition fails.
-4. Respect the hooks under `.claude/hooks/` — they will block bypass attempts (skipped tests, edits outside files_in_scope, production code without a failing test, etc.).
-5. Do not duplicate command logic here; if the spec needs to change, edit the shared file.
+## Reads
+- `01-spec.md`, `02-spec-review.md` (verdict must be `PASS`).
+- `.specs/_stack.json`.
+- `.claude/templates/03-design.md`, `.claude/templates/04-tasks.md`, `.claude/templates/10-adr.md`.
+- All design/architecture skills above.
+
+## Writes
+- `.specs/<feature-id>/03-design.md`
+- `.specs/<feature-id>/04-tasks.md`
+- `.specs/<feature-id>/.tdd-state.json` (initial: no `active_task`, every task `phase: "pending"`)
+- `.specs/<feature-id>/adr/ADR-NNN-*.md` for any architecturally significant decision.
+
+## Process
+1. Refuse if `02-spec-review.md` is missing or its verdict is not `PASS`.
+2. Refuse if `01-spec.md` still has any `Q-NNN`.
+3. Produce `03-design.md`: module map, public API, REST contract sketch (or full OpenAPI), data model, migration plan (Flyway/Liquibase per `_stack.json`), error model, observability, security touch points, ArchUnit rule additions.
+4. For each architecturally-significant choice, write an ADR.
+5. Decompose into tasks `T-001`, `T-002`, ... Each task must list:
+   - `id`, `title`, `acs_covered: [AC-NNN, ...]`, `files_in_scope: [paths]`, `depends_on`, `estimated_phases: [red, green, refactor, simplify]`.
+   - Tasks that touch `src/main/**` MUST list at least one file under `src/test/**` in `files_in_scope`.
+6. Validate AC coverage: every AC from `01-spec.md` must appear in at least one task. If not, FAIL the plan and surface the gap.
+7. Initialize `.tdd-state.json`:
+   ```json
+   { "active_task": null, "tasks": { "T-001": { "phase": "pending", "files_in_scope": [...], "acs_covered": [...] }, ... } }
+   ```
+
+## Refuse if
+- Spec review verdict is not `PASS`.
+- Any AC has no covering task.
+- Any task touches `src/main/**` without a corresponding `src/test/**` file in scope.
+
+## Done when
+Design, tasks, ADRs, and `.tdd-state.json` are written. Point the user to `/build T-001`.

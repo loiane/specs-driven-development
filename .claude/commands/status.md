@@ -1,18 +1,39 @@
 ---
-description: Run /status — see shared/commands/status.md for the authoritative spec.
-argument-hint: see shared/commands/status.md
+description: Run /status — see .claude/commands/status.md for the authoritative spec.
+argument-hint: see .claude/commands/status.md
 
 ---
+# /status
 
-# /status (Claude Code wrapper)
+**Phase:** meta — read-only
+**Owning agent:** none (pure reporting)
 
-This file is a thin pointer. The single source of truth is
-[`shared/commands/status.md`](../../shared/commands/status.md). Read it before acting.
+## Purpose
+Show the user where every active feature stands. No writes, no side effects.
 
-## Behavior
+## Inputs
+- Optional `<feature-id>`; without it, summarize all features under `.specs/`.
 
-1. Load `shared/commands/status.md` and follow Process step-by-step.
+## Reads
+- `.specs/*/01-spec.md`, `02-spec-review.md`, `03-design.md`, `04-tasks.md`, `.tdd-state.json`, `07-validation-report.md`.
+- `target/harness-summary.json` if present.
 
-3. Honor every `Refuse if` clause; do not proceed if any precondition fails.
-4. Respect the hooks under `.claude/hooks/` — they will block bypass attempts (skipped tests, edits outside files_in_scope, production code without a failing test, etc.).
-5. Do not duplicate command logic here; if the spec needs to change, edit the shared file.
+## Writes
+Nothing.
+
+## Process
+For each feature (or the supplied one), produce a one-row-per-feature table:
+- `feature_id`
+- `phase` — derived from which artifacts exist + verdicts (specify, spec-review, plan, build, test, validate, review, done).
+- `acs_total`, `acs_with_tests`
+- `tasks_done / tasks_total`
+- `last_validate_verdict` and timestamp
+- `active_task` from `.tdd-state.json` (if any) and its current `phase`
+
+Then print a single sentence: "Recommended next action: …".
+
+## Refuse if
+Never. This command never refuses; if data is missing it shows `—`.
+
+## Done when
+Status table is printed and a recommended next command is suggested.

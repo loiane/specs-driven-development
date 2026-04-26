@@ -6,7 +6,7 @@ description: "Test code rule — JUnit 5, Testcontainers, traceability tagging."
 
 # Test code rule
 
-Apply `shared/skills/junit5-testcontainers-patterns/SKILL.md` and `shared/skills/requirements-traceability/SKILL.md`.
+Apply `.windsurf/skills/junit5-testcontainers-patterns/SKILL.md` and `.windsurf/skills/requirements-traceability/SKILL.md`.
 
 ## Required
 

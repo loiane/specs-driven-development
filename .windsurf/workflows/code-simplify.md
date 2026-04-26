@@ -1,15 +1,43 @@
 ---
-description: Run /code-simplify — see shared/commands/code-simplify.md for the authoritative spec.
+description: Run /code-simplify — see .windsurf/workflows/code-simplify.md for the authoritative spec.
 ---
+# /code-simplify
 
-# /code-simplify (Windsurf workflow wrapper)
+**Phase:** 6 (meta) — clarity sweep
+**Owning agent:** `.windsurf/workflows/spring-code-reviewer.md`
+**Skills used:** `clarity-over-cleverness`, `tdd-red-green-refactor`
 
-Single source of truth: [`shared/commands/code-simplify.md`](../../shared/commands/code-simplify.md). Cascade must read it now.
+## Purpose
+Apply the clarity-over-cleverness rules to a single file or a directory while keeping tests green. This is the same pass `/build`'s simplify phase performs, but on demand.
 
-## Behavior
+## Inputs
+- `<path>` (positional). A file under `src/main/**` or a directory.
+- Optional `--dry-run` to print proposed edits without writing.
 
-1. Load `shared/commands/code-simplify.md` and follow Process step-by-step.
-2. Adopt the role described in [`shared/agents/spring-code-reviewer.md`](../../shared/agents/spring-code-reviewer.md).
-3. The rules under `.windsurf/rules/*.md` apply automatically (always-on + glob-scoped). They cover the same ground as Claude's hooks: no skip flags, no production code without a failing test, no edits outside files_in_scope, no advancing past unresolved Q-NNN.
-4. Honor every `Refuse if` clause.
-5. Do not duplicate logic in this file; edit the shared spec instead.
+## Reads
+- `<path>` (the target file/directory).
+- `.windsurf/skills/clarity-over-cleverness/SKILL.md` (authoritative checklist).
+
+## Writes
+- The targeted files (in place).
+- A diff summary appended to `.specs/<feature-id>/05-implementation-log.md` under a `### simplify-pass` block, or to a fresh `clarity-pass-<date>.md` if no active feature.
+
+## Process
+1. Refuse if `mvn test` is not green right now (run it first; abort on failure).
+2. For each file in scope, apply the 7 rewrite targets in order:
+   1. Untangle nested ternaries → if/else.
+   2. Streams only when clearer than a loop; otherwise loop.
+   3. Inline once-used helpers.
+   4. Kill option flags (split into two methods).
+   5. Name domain concepts (no `data`, `info`, `manager`, `helper`, `util`).
+   6. Remove premature abstraction (interface with one impl, factory with one product).
+   7. Prefer early returns over deep nesting.
+3. Re-run `mvn test` after each file. If anything goes red, revert that file's edits and record it as a Skipped item.
+4. Emit a summary: files touched, rewrites applied per category, tests run, regressions encountered.
+
+## Refuse if
+- Tests are not green at start.
+- The path is under `src/test/**` (test clarity is governed by `/test`, not this command).
+
+## Done when
+All in-scope files are either simplified or explicitly skipped, and tests are green.

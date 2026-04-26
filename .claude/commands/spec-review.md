@@ -1,18 +1,39 @@
 ---
-description: Run /spec-review — see shared/commands/spec-review.md for the authoritative spec.
-argument-hint: see shared/commands/spec-review.md
+description: Run /spec-review — see .claude/commands/spec-review.md for the authoritative spec.
+argument-hint: see .claude/commands/spec-review.md
 agent: spring-spec-author
 ---
+# /spec-review
 
-# /spec-review (Claude Code wrapper)
+**Phase:** 2 — review
+**Owning agent:** `.claude/agents/spring-spec-author.md` (review hat)
+**Skills used:** `ears-spec-authoring`, `requirements-traceability`
 
-This file is a thin pointer. The single source of truth is
-[`shared/commands/spec-review.md`](../../shared/commands/spec-review.md). Read it before acting.
+## Purpose
+Audit `01-spec.md` against the spec checklist and produce `02-spec-review.md` with a pass/fail verdict and a numbered list of required edits.
 
-## Behavior
+## Inputs
+- `<feature-id>` (positional). If omitted, use the most recently modified `.specs/<id>/`.
 
-1. Load `shared/commands/spec-review.md` and follow Process step-by-step.
-2. Delegate to `shared/agents/spring-spec-author.md` (already wrapped at `.claude/agents/spring-spec-author.md`).
-3. Honor every `Refuse if` clause; do not proceed if any precondition fails.
-4. Respect the hooks under `.claude/hooks/` — they will block bypass attempts (skipped tests, edits outside files_in_scope, production code without a failing test, etc.).
-5. Do not duplicate command logic here; if the spec needs to change, edit the shared file.
+## Reads
+- `.specs/<feature-id>/01-spec.md`
+- `.claude/checklists/spec-review.md`
+- `.claude/templates/02-spec-review.md`
+
+## Writes
+- `.specs/<feature-id>/02-spec-review.md`
+
+## Process
+1. Walk every checklist item; for each, record `pass | fail | n/a` plus a one-line rationale.
+2. For each `fail`, write a concrete edit (line + replacement) the spec author must apply.
+3. Verify EARS form compliance for every AC.
+4. Verify each AC is independently testable (no compound criteria).
+5. Verify `## Open Questions` is empty before declaring overall verdict `PASS`.
+6. Emit summary: `verdict`, `acs_total`, `acs_failed`, `open_questions`, `next_command`.
+
+## Refuse if
+- `01-spec.md` does not exist.
+- Any `Q-NNN` is unresolved — verdict must be `FAIL` with the open question list quoted verbatim.
+
+## Done when
+`02-spec-review.md` exists. If verdict is `PASS`, point the user to `/plan`. If `FAIL`, point them back to editing `01-spec.md`.
