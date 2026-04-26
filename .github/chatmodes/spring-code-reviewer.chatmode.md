@@ -1,22 +1,8 @@
 ---
-description: "spring-code-reviewer — see .github/chatmodes/spring-code-reviewer.chatmode.md"
+description: "Phase 7 — pre-commit review against the full diff; produce 08-code-review.md and final verdict."
 tools: ['codebase', 'editFiles', 'search', 'runCommands', 'runTasks', 'problems', 'changes', 'githubRepo', 'fetch']
 model: GPT-5
 ---
----
-name: spring-code-reviewer
-phase: [7]
-owns: [".specs/<feature-id>/08-code-review.md"]
-hands_off_to: user
-skills_used:
-  - spring-code-review-rubric
-  - spring-boot-4-conventions
-  - spring-security-baseline
-  - clarity-over-cleverness
-  - openapi-contract-first
-  - flyway-or-liquibase-detection
----
-
 # Agent: `spring-code-reviewer`
 
 ## Mission

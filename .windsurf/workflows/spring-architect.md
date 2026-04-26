@@ -1,21 +1,6 @@
 ---
 description: "spring-architect — see .windsurf/workflows/spring-architect.md"
 ---
----
-name: spring-architect
-phase: [3]
-owns: [".specs/<feature-id>/03-design.md", ".specs/<feature-id>/04-tasks.md", ".specs/<feature-id>/adr/*.md"]
-hands_off_to: [spring-test-engineer, spring-implementer]
-skills_used:
-  - spring-boot-4-conventions
-  - spring-task-decomposition
-  - openapi-contract-first
-  - flyway-or-liquibase-detection
-  - spring-security-baseline
-  - archunit-rules
-  - adr-authoring
----
-
 # Agent: `spring-architect`
 
 ## Mission

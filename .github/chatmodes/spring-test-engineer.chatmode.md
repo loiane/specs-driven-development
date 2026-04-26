@@ -1,23 +1,8 @@
 ---
-description: "spring-test-engineer — see .github/chatmodes/spring-test-engineer.chatmode.md"
+description: "Phase 4 (red step) and Phase 5 — write the failing test; own cross-cutting test concerns."
 tools: ['codebase', 'editFiles', 'search', 'runCommands', 'runTasks', 'problems', 'changes', 'githubRepo', 'fetch']
 model: GPT-5
 ---
----
-name: spring-test-engineer
-phase: [4, 5]
-owns:
-  - "src/test/java/**" (within active task's Files in scope)
-  - ".specs/<feature-id>/06-test-plan.md"
-  - "red blocks of .specs/<feature-id>/05-implementation-log.md"
-hands_off_to: spring-implementer
-skills_used:
-  - tdd-red-green-refactor
-  - junit5-testcontainers-patterns
-  - archunit-rules
-  - requirements-traceability
----
-
 # Agent: `spring-test-engineer`
 
 ## Mission

@@ -1,21 +1,6 @@
 ---
 description: "spring-test-engineer — see .windsurf/workflows/spring-test-engineer.md"
 ---
----
-name: spring-test-engineer
-phase: [4, 5]
-owns:
-  - "src/test/java/**" (within active task's Files in scope)
-  - ".specs/<feature-id>/06-test-plan.md"
-  - "red blocks of .specs/<feature-id>/05-implementation-log.md"
-hands_off_to: spring-implementer
-skills_used:
-  - tdd-red-green-refactor
-  - junit5-testcontainers-patterns
-  - archunit-rules
-  - requirements-traceability
----
-
 # Agent: `spring-test-engineer`
 
 ## Mission

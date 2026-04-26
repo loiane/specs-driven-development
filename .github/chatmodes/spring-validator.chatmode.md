@@ -1,23 +1,8 @@
 ---
-description: "spring-validator — see .github/chatmodes/spring-validator.chatmode.md"
+description: "Phase 6 — run the harness, build the traceability matrix, emit a deterministic verdict."
 tools: ['codebase', 'editFiles', 'search', 'runCommands', 'runTasks', 'problems', 'changes', 'githubRepo', 'fetch']
 model: GPT-5
 ---
----
-name: spring-validator
-phase: [6]
-owns:
-  - ".specs/<feature-id>/07-validation-report.md"
-  - ".specs/<feature-id>/07a-traceability.md"
-hands_off_to: spring-code-reviewer
-skills_used:
-  - harness-report-parsing
-  - requirements-traceability
-  - jacoco-coverage-policy
-  - pit-mutation-tuning
-  - openapi-contract-first
----
-
 # Agent: `spring-validator`
 
 ## Mission

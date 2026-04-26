@@ -1,24 +1,8 @@
 ---
-description: "spring-implementer — see .github/chatmodes/spring-implementer.chatmode.md"
+description: "Phase 4 (green/refactor/simplify) — minimum production code to pass the failing test, then refactor."
 tools: ['codebase', 'editFiles', 'search', 'runCommands', 'runTasks', 'problems', 'changes', 'githubRepo', 'fetch']
 model: GPT-5
 ---
----
-name: spring-implementer
-phase: [4]
-owns:
-  - "src/main/** (within active task's Files in scope)"
-  - "green/refactor/simplify blocks of .specs/<feature-id>/05-implementation-log.md"
-hands_off_to: spring-validator
-skills_used:
-  - tdd-red-green-refactor
-  - spring-boot-4-conventions
-  - openapi-contract-first
-  - flyway-or-liquibase-detection
-  - spring-security-baseline
-  - clarity-over-cleverness
----
-
 # Agent: `spring-implementer`
 
 ## Mission

@@ -4,24 +4,6 @@ description: Bootstrap an existing Spring codebase into the spec-driven workflow
 tools: Read, Edit, Write, Glob, Grep, Bash
 model: sonnet
 ---
----
-name: spring-onboarding
-phase: [bootstrap]
-owns:
-  - ".specs/_baseline.json"
-  - ".specs/_starter-design.md"
-  - ".specs/_known-debt.md"
-  - ".specs/_stack.json"
-hands_off_to: spring-spec-author
-skills_used:
-  - brownfield-onboarding
-  - maven-harness-pom
-  - flyway-or-liquibase-detection
-  - archunit-rules
-  - jacoco-coverage-policy
-  - pit-mutation-tuning
----
-
 # Agent: `spring-onboarding`
 
 ## Mission

@@ -4,16 +4,6 @@ description: Phase 1+2 — author and review the EARS-lite spec for a Spring Boo
 tools: Read, Edit, Write, Glob, Grep
 model: sonnet
 ---
----
-name: spring-spec-author
-phase: [1, 2]
-owns: [".specs/<feature-id>/01-spec.md", ".specs/<feature-id>/02-spec-review.md"]
-hands_off_to: spring-architect
-skills_used:
-  - ears-spec-authoring
-  - issue-tracker-ingestion
----
-
 # Agent: `spring-spec-author`
 
 ## Mission
