@@ -105,6 +105,7 @@ land). See [examples/brownfield/README.md](examples/brownfield/README.md).
 ```text
 /spec "Add gift-card checkout"      # or: /spec JIRA-123
 /spec-review                        # gate exit from Phase 1
+/epic-plan                          # for Epics: high-level design + slice roadmap
 /plan                               # design + tasks + .tdd-state.json
 /build T-001                        # red → green → refactor → simplify (one task at a time)
 /test --gap                         # close coverage / mutation gaps
@@ -117,6 +118,9 @@ git commit                          # YOU run this — the agent never commits
 Repeat `/build T-NNN` for each task in `04-tasks.md`. The agent refuses to edit
 `src/main/**` unless `.specs/<feature-id>/.tdd-state.json` shows a failing test
 for the active task.
+
+For Epic-sized initiatives, run `/epic-plan` after `/spec-review`, then run `/plan`
+to produce slice-level detailed design and tasks from the approved roadmap.
 
 ### Read-only helpers
 
@@ -133,6 +137,7 @@ and the equivalent Copilot/Windsurf instructions:
 |---|---|
 | "spec this" / "turn this ticket into requirements" | `/spec` |
 | "review the spec" | `/spec-review` |
+| "plan this epic" / "design this epic" / "slice this epic" | `/epic-plan` |
 | "plan this" / "design this" | `/plan` |
 | "implement T-003" / "build T-003" | `/build T-003` |
 | "validate" / "run the harness" | `/validate` |
@@ -160,9 +165,9 @@ The same gates the agent runs are reachable from a normal terminal:
 docs/             methodology · harness-principles · spec-format · platform-mapping · artifact-contract
 shared/           single source of truth (platform-neutral)
   ├ agents/       7 AGENT.md role files
-  ├ skills/       21 SKILL.md domain knowledge files
-  ├ commands/     12 command specifications
-  ├ templates/    10 .specs/ artifact templates
+  ├ skills/       22 SKILL.md domain knowledge files
+  ├ commands/     13 command specifications
+  ├ templates/    12 .specs/ artifact templates
   ├ checklists/   4 review/DoD/gate checklists
   └ maven/        parent-pom-fragment.xml (10-layer harness, pinned versions)
 .claude/          agents · skills · commands · hooks · settings.json   (Claude Code wrappers)
@@ -184,6 +189,8 @@ Each feature lives under `.specs/<feature-id>/`:
 |---|---|---|
 | `01-spec.md` | Specify | `spring-spec-author` |
 | `02-spec-review.md` | Review specs | `spring-spec-author` |
+| `03-epic-design.md` | Plan (Epic mode) | `spring-architect` |
+| `03a-epic-roadmap.md` | Plan (Epic mode) | `spring-architect` |
 | `03-design.md` | Plan | `spring-architect` |
 | `04-tasks.md` | Plan | `spring-architect` |
 | `05-implementation-log.md` | Implement (TDD) | `spring-implementer` + `spring-test-engineer` |

@@ -13,6 +13,11 @@ The toolkit organizes feature delivery into **seven phases**. Each phase has:
 4. Implement (TDD)  →  5. Test  →  6. Validate  →  7. Code review  →  Commit
 ```
 
+For large features (Epics), Phase 3 runs as two substeps:
+
+- **3a. Epic high-level design** (`03-epic-design.md`, `03a-epic-roadmap.md`)
+- **3b. Slice-level detailed design and tasks** (`03-design.md`, `04-tasks.md`)
+
 ## Cross-cutting rule for phases 1–3: no assumptions
 
 `spring-spec-author` and `spring-architect` operate under a strict **no-invention policy** during specify, spec-review, design, and tasks:
@@ -61,7 +66,7 @@ Walks the spec against the spec-review checklist. Anything unclear becomes a new
 ## Phase 3 — Plan (design + tasks)
 
 **Owner:** `spring-architect`
-**Artifacts:** `03-design.md`, `04-tasks.md`
+**Artifacts:** `03-design.md`, `04-tasks.md` (plus Epic artifacts when Epic mode is active)
 **Skills:** `spring-boot-4-conventions`, `spring-security-baseline`, `openapi-contract-first`, `flyway-or-liquibase-detection`, `adr-authoring`, `spring-task-decomposition`
 
 `03-design.md` contains:
@@ -90,7 +95,20 @@ Walks the spec against the spec-review checklist. Anything unclear becomes a new
 
 Tasks are sized at roughly 1–4 hours. Cross-task tests live in phase 5.
 
-**Exit contract:** every AC traced to ≥1 task; every task has Test-IDs and Files-in-scope; no unresolved `Q-NNN`.
+### Epic mode (large features)
+
+When the feature is too large for direct decomposition (multiple vertical slices, shared cross-cutting decisions, or multi-milestone delivery), `spring-architect` must produce Epic artifacts before detailed tasks:
+
+- `03-epic-design.md` — high-level architecture boundaries, shared decisions, cross-cutting constraints, and global risks.
+- `03a-epic-roadmap.md` — ordered vertical slices, dependencies, milestone intent, and per-slice acceptance focus.
+
+Epic mode rules:
+
+1. `04-tasks.md` cannot be authored until Epic-level `Q-NNN` are resolved (or explicitly deferred with rationale).
+2. Detailed planning is done slice-by-slice, not all at once.
+3. Shared architectural decisions are captured once (ADRs linked from Epic artifacts), then reused by slice plans.
+
+**Exit contract:** every AC traced to ≥1 task; every task has Test-IDs and Files-in-scope; no unresolved `Q-NNN`; when Epic mode is active, `03-epic-design.md` and `03a-epic-roadmap.md` exist and are signed off before detailed task decomposition.
 
 ## Phase 4 — Implement (TDD)
 
@@ -157,7 +175,7 @@ Commit is gated on **zero blockers/majors** or a documented waiver. Request-chan
 |---|---|---|---|
 | 1. Specify | `01-spec.md` | `spring-spec-author` | No `Q-NNN` unresolved |
 | 2. Review specs | `02-spec-review.md` | `spring-spec-author` | Checklist green |
-| 3. Plan | `03-design.md`, `04-tasks.md` | `spring-architect` | All AC traced; no `Q-NNN` |
+| 3. Plan | `03-design.md`, `04-tasks.md` (+ `03-epic-design.md`, `03a-epic-roadmap.md` for Epics) | `spring-architect` | All AC traced; no `Q-NNN`; Epic artifacts approved when Epic mode is active |
 | 4. Implement | `05-implementation-log.md` | `spring-test-engineer` + `spring-implementer` | Each task: red→green→refactor logged |
 | 5. Test | `06-test-plan.md` | `spring-test-engineer` | Cross-cutting suite mapped |
 | 6. Validate | `07-validation-report.md`, `07a-traceability.md` | `spring-validator` | Harness green; full traceability |

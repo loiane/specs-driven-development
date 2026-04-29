@@ -8,6 +8,8 @@ Every feature produces these files, in order. Phase advance is gated on the prio
 └── <feature-id>/
     ├── 01-spec.md                  # phase 1 — owner: spring-spec-author
     ├── 02-spec-review.md           # phase 2 — owner: spring-spec-author
+    ├── 03-epic-design.md           # phase 3a (optional, Epic mode) — owner: spring-architect
+    ├── 03a-epic-roadmap.md         # phase 3a (optional, Epic mode) — owner: spring-architect
     ├── 03-design.md                # phase 3 — owner: spring-architect
     ├── 04-tasks.md                 # phase 3 — owner: spring-architect
     ├── 05-implementation-log.md    # phase 4 — owners: spring-test-engineer + spring-implementer
@@ -34,6 +36,8 @@ Each artifact starts from the matching template under `templates/`:
 |---|---|
 | `01-spec.md` | `spec.template.md` |
 | `02-spec-review.md` | `spec-review.template.md` |
+| `03-epic-design.md` | `epic-design.template.md` |
+| `03a-epic-roadmap.md` | `epic-roadmap.template.md` |
 | `03-design.md` | `design.template.md` |
 | `04-tasks.md` | `tasks.template.md` |
 | `05-implementation-log.md` | `implementation-log.template.md` |
@@ -71,8 +75,17 @@ A new `src/main/**` edit is allowed only when the active task's `phase` is `red`
 
 - Editing artifact files out of phase order.
 - Skipping `02-spec-review.md` (sign-off required).
+- In Epic mode, writing `04-tasks.md` before both `03-epic-design.md` and `03a-epic-roadmap.md` are approved.
 - Beginning `04-tasks.md` while `03-design.md` has unresolved `Q-NNN`.
 - Editing `08-code-review.md` by anyone other than `spring-code-reviewer`.
+
+## Epic mode trigger
+
+Epic mode is required when the feature has two or more planned vertical slices, shared cross-cutting architectural decisions, or multi-milestone delivery requirements. In Epic mode:
+
+1. `03-epic-design.md` and `03a-epic-roadmap.md` must exist before detailed task decomposition.
+2. Epic-level open questions (`Q-NNN`) must be resolved (or deferred with rationale) before `04-tasks.md` is finalized.
+3. Slice-level detailed tasks are generated incrementally from the Epic roadmap.
 
 ## Cross-references
 

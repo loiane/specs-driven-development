@@ -45,6 +45,7 @@ Where Windsurf has no native pre-tool hook, the equivalent guarantee is encoded 
 |---|---|---|---|
 | `/spec` | `.claude/commands/spec.md` | `.github/prompts/spec.prompt.md` | `.windsurf/workflows/spec.md` |
 | `/spec-review` | … `spec-review.md` | … `spec-review.prompt.md` | … `spec-review.md` |
+| `/epic-plan` | … `epic-plan.md` | … `epic-plan.prompt.md` | … `epic-plan.md` |
 | `/design` | … `design.md` | … `design.prompt.md` | … `design.md` |
 | `/tasks` | … `tasks.md` | … `tasks.prompt.md` | … `tasks.md` |
 | `/build <task-id>` | … `build.md` | … `build.prompt.md` | … `build.md` |
