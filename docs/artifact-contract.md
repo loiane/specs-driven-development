@@ -2,7 +2,7 @@
 
 Every feature produces these files, in order. Phase advance is gated on the prior file existing and its checklist passing.
 
-```
+```text
 .specs/
 ├── _baseline.json                  # repo-wide; brownfield pre-existing failures
 └── <feature-id>/
@@ -33,7 +33,7 @@ Every feature produces these files, in order. Phase advance is gated on the prio
 Each artifact starts from the matching template under `templates/`:
 
 | Artifact | Template |
-|---|---|
+| --- | --- |
 | `01-spec.md` | `spec.template.md` |
 | `02-spec-review.md` | `spec-review.template.md` |
 | `03-epic-design.md` | `epic-design.template.md` |

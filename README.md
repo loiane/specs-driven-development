@@ -73,17 +73,17 @@ chmod +x scripts/*.sh
 > The toolkit ships two workflows:
 >
 > | Workflow | Purpose | When to keep |
-> |---|---|---|
-> `ci.yml` | Validates the toolkit itself (shellcheck, YAML lint, broken links, skill structure) | Only in the **toolkit repo** — delete it from your Spring project |
-> `harness.yml` | Runs the full 10-layer Spring harness (build, tests, coverage, mutation, etc.) | Only in your **Spring project** — it requires a `pom.xml` |
+> | --- | --- | --- |
+> | `ci.yml` | Validates the toolkit itself (shellcheck, YAML lint, broken links, skill structure) | Only in the **toolkit repo** — delete it from your Spring project |
+> | `harness.yml` | Runs the full 10-layer Spring harness (build, tests, coverage, mutation, etc.) | Only in your **Spring project** — it requires a `pom.xml` |
 
 ### Verify per-platform wiring
 
 | Platform | Smoke test |
-|---|---|
-| Claude Code  | Open the repo, run `/help` — you should see the command catalog. |
-| Copilot      | Open Copilot Chat, type `/spec` — you should see the chat-mode prompt from `.github/chatmodes/`. |
-| Windsurf     | Open Cascade, type `/spec` — Windsurf loads the workflow from `.windsurf/workflows/`. |
+| --- | --- |
+| Claude Code | Open the repo, run `/help` — you should see the command catalog. |
+| Copilot | Open Copilot Chat, type `/spec` — you should see the chat-mode prompt from `.github/chatmodes/`. |
+| Windsurf | Open Cascade, type `/spec` — Windsurf loads the workflow from `.windsurf/workflows/`. |
 
 ## Use
 
@@ -134,7 +134,7 @@ right command by [.claude/hooks/route-natural-language-aliases.sh](.claude/hooks
 and the equivalent Copilot/Windsurf instructions:
 
 | You type | Runs |
-|---|---|
+| --- | --- |
 | "spec this" / "turn this ticket into requirements" | `/spec` |
 | "review the spec" | `/spec-review` |
 | "plan this epic" / "design this epic" / "slice this epic" | `/epic-plan` |
@@ -161,7 +161,7 @@ The same gates the agent runs are reachable from a normal terminal:
 
 ## Repository layout
 
-```
+```text
 docs/             methodology · harness-principles · spec-format · platform-mapping · artifact-contract
 shared/           single source of truth (platform-neutral)
   ├ agents/       7 AGENT.md role files
@@ -186,7 +186,7 @@ platforms stay in lockstep.
 Each feature lives under `.specs/<feature-id>/`:
 
 | File | Phase | Owner |
-|---|---|---|
+| --- | --- | --- |
 | `01-spec.md` | Specify | `spring-spec-author` |
 | `02-spec-review.md` | Review specs | `spring-spec-author` |
 | `03-epic-design.md` | Plan (Epic mode) | `spring-architect` |

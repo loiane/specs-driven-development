@@ -9,7 +9,7 @@ Skills, templates, checklists, and prompt fragments live under `shared/`. Each p
 ## Mapping table
 
 | Concept | Shared core | Claude Code | GitHub Copilot | Windsurf |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Skill | `skills/<name>/SKILL.md` | `.claude/skills/<name>/SKILL.md` (symlink/copy) | `.github/instructions/skill-<name>.instructions.md` (path-scoped) | `.windsurf/rules/skills/<name>.md` (model-decision activation) |
 | Agent | (concept) | `.claude/agents/<name>.md` (subagent) | `.github/chatmodes/<name>.chatmode.md` | `.windsurf/rules/agents/<name>.md` + invocation in workflow |
 | Slash command | (concept) | `.claude/commands/<name>.md` | `.github/prompts/<name>.prompt.md` | `.windsurf/workflows/<name>.md` |
@@ -22,7 +22,7 @@ Skills, templates, checklists, and prompt fragments live under `shared/`. Each p
 Each agent has a strict permission boundary. The mechanism differs per platform:
 
 | Boundary | Claude Code | Copilot | Windsurf |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Allowed file globs | `allowed-tools` + hook diff-check | `tools` frontmatter + path-scoped instructions | rule frontmatter `globs:` + workflow scope |
 | Forbidden actions | PreToolUse hook | instruction file + `tools` allowlist | always-on rule + workflow validation step |
 | Required artifact present | PreToolUse hook | instruction (model-enforced) + workflow check | rule check at workflow entry |
@@ -42,7 +42,7 @@ Where Windsurf has no native pre-tool hook, the equivalent guarantee is encoded 
 ## Slash command equivalence
 
 | Workflow | Claude Code | Copilot | Windsurf |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/spec` | `.claude/commands/spec.md` | `.github/prompts/spec.prompt.md` | `.windsurf/workflows/spec.md` |
 | `/spec-review` | … `spec-review.md` | … `spec-review.prompt.md` | … `spec-review.md` |
 | `/epic-plan` | … `epic-plan.md` | … `epic-plan.prompt.md` | … `epic-plan.md` |

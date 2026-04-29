@@ -8,7 +8,7 @@ The toolkit organizes feature delivery into **seven phases**. Each phase has:
 - an **exit contract** (what must be true to advance),
 - and a **gate** that is enforced by hooks / rules / chatmode tool allowlists.
 
-```
+```text
 1. Specify  →  2. Review specs  →  3. Plan (design + tasks)  →
 4. Implement (TDD)  →  5. Test  →  6. Validate  →  7. Code review  →  Commit
 ```
@@ -82,7 +82,7 @@ Walks the spec against the spec-review checklist. Anything unclear becomes a new
 
 `04-tasks.md` contains a numbered task list. Each task has:
 
-```
+```text
 ### T-001: <short title>
 - AC-IDs: AC-001, AC-002
 - Test-IDs: T-001-T1 (slice), T-001-T2 (IT)
@@ -151,7 +151,7 @@ Runs `.github/scripts/harness.sh` (same script as CI). Parses each layer's repor
 Builds the **requirements traceability matrix** in `07a-traceability.md`:
 
 | AC-ID | Tasks | Tests (status) | Code symbols | Gates |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 
 Any AC without a covering test, or any orphan test/code without an AC link, is flagged as a finding and blocks the phase.
 
@@ -172,7 +172,7 @@ Commit is gated on **zero blockers/majors** or a documented waiver. Request-chan
 ## Phase summary
 
 | Phase | Artifact(s) | Owner | Gate |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 1. Specify | `01-spec.md` | `spring-spec-author` | No `Q-NNN` unresolved |
 | 2. Review specs | `02-spec-review.md` | `spring-spec-author` | Checklist green |
 | 3. Plan | `03-design.md`, `04-tasks.md` (+ `03-epic-design.md`, `03a-epic-roadmap.md` for Epics) | `spring-architect` | All AC traced; no `Q-NNN`; Epic artifacts approved when Epic mode is active |

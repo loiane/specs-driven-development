@@ -49,7 +49,7 @@ Key rules: constructor injection only; package by feature/domain (not by layer â
 ## Natural-language aliases
 
 | Phrase | Workflow |
-|---|---|
+| --- | --- |
 | "simplify the code" / "make this clearer" | `/code-simplify` |
 | "spec this" / "turn this ticket into requirements" | `/spec` |
 | "review the spec" | `/spec-review` |
