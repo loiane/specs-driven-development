@@ -22,6 +22,7 @@ At the start of every session, read:
 - Never invent a default. When you would otherwise pick one (DB engine, auth, error envelope, pagination, units, currency, retention, etc.), append a `Q-NNN` to the active artifact's `## Open Questions` and **halt** for the user.
 - Quote source tickets verbatim.
 - Stable IDs — `AC-NNN`, `T-NNN`, `Q-NNN` are never renumbered.
+- For Epic-sized work, produce `03-epic-design.md` and `03a-epic-roadmap.md` before detailed slice-level `03-design.md` and `04-tasks.md`.
 
 ## Hard rules — phase 4 (TDD)
 
@@ -52,6 +53,7 @@ Key rules: constructor injection only; package by feature/domain (not by layer �
 | "simplify the code" / "make this clearer" | `/code-simplify` |
 | "spec this" / "turn this ticket into requirements" | `/spec` |
 | "review the spec" | `/spec-review` |
+| "plan this epic" / "design this epic" / "slice this epic" | `/epic-plan` |
 | "plan this" / "design this" / "break into tasks" | `/plan` |
 | "implement T-NNN" / "build T-NNN" | `/build T-NNN` |
 | "validate" / "run the harness" | `/validate` |
