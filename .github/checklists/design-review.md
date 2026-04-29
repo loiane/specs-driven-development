@@ -30,6 +30,13 @@ Used by `spring-architect` to gate exit from Phase 3 (`03-design.md` + `04-tasks
 - [ ] Tasks are sized at roughly 1–4 hours.
 - [ ] Cross-cutting tests are noted as Phase 5 (not duplicated in tasks).
 
+## Epic mode (when applicable)
+
+- [ ] `03-epic-design.md` exists and captures shared cross-cutting decisions.
+- [ ] `03a-epic-roadmap.md` exists and sequences vertical slices with dependencies.
+- [ ] Slice boundaries are vertical (user-visible outcomes), not layer-by-layer slices.
+- [ ] Detailed `04-tasks.md` decomposition starts only after Epic artifacts are approved.
+
 ## ADRs
 
 - [ ] Every non-obvious design decision has an ADR (status `proposed` is fine).

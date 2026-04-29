@@ -20,6 +20,7 @@ You are working in a workspace that uses the spec-driven workflow defined in `do
 - When you would otherwise pick a default, write a `Q-NNN` line in the active artifact's `## Open Questions` section and **halt** for the user.
 - Quote source tickets verbatim — never paraphrase requirements.
 - AC IDs (`AC-NNN`) and task IDs (`T-NNN`) are stable; never renumber.
+- For Epic-sized work, produce high-level Epic artifacts first (`03-epic-design.md`, `03a-epic-roadmap.md`) before slice-level `03-design.md` and `04-tasks.md`.
 
 ## Hard rules — phase 4 (build)
 
@@ -66,6 +67,7 @@ When the user types these phrases, treat them as the corresponding command:
 | "simplify the code" / "make this clearer" / "remove the cleverness" | `/code-simplify` |
 | "spec this" / "turn this ticket into requirements" | `/spec` |
 | "review the spec" | `/spec-review` |
+| "plan this epic" / "design this epic" / "slice this epic" | `/epic-plan` |
 | "plan this" / "design this" / "break into tasks" | `/plan` |
 | "implement T-NNN" / "build T-NNN" | `/build T-NNN` |
 | "validate" / "run the harness" | `/validate` |
