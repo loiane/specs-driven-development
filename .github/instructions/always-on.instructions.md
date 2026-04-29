@@ -1,9 +1,9 @@
 ---
 applyTo: "**"
-description: "Always-on guardrails for spec-driven Spring Boot 4 development."
+description: "Always-on guardrails for spec-driven Spring + Angular development."
 ---
 
-# Spec-driven Spring Boot 4 — always-on guardrails
+# Spec-driven Spring + Angular — always-on guardrails
 
 You are working in a workspace that uses the spec-driven workflow defined in `docs/methodology.md`. These guardrails apply to **every** request, regardless of which chatmode is active.
 
@@ -29,6 +29,7 @@ You are working in a workspace that uses the spec-driven workflow defined in `do
 - Never delete a test or remove an assertion.
 - Never lower a coverage threshold.
 - Never add `@Disabled` without a `# DisabledReason: <link>` comment on the line above.
+- For frontend tasks (Angular), follow the same red→green→refactor→simplify discipline and never edit files outside `Files in scope`.
 
 ## Hard rules — phase 6 (validate) and phase 7 (review)
 
@@ -47,6 +48,14 @@ Apply `shared/skills/spring-boot-4-conventions/SKILL.md`:
 - `@MockitoBean` (not deprecated `@MockBean`).
 - Slice tests over `@SpringBootTest` whenever possible.
 - **No Lombok** in any new code (use records and explicit constructors).
+
+## Frontend conventions (Angular track)
+
+Apply Angular-focused skills when the active task touches frontend files:
+- Use standalone components and route-level code splitting where practical.
+- Use typed API clients/contracts; avoid ad-hoc untyped HTTP response handling.
+- Keep component templates accessible (labels, button semantics, keyboard reachability).
+- Cover validation rules with unit/component tests; do not rely on manual QA only.
 
 ## Natural-language aliases
 
