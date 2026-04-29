@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Specs-Driven Development + Harness</title>
+    <style>
+      :root {
+        --bg: #f7f4ef;
+        --paper: #fffdf9;
+        --ink: #1f1a17;
+        --muted: #5f5751;
+        --accent: #c54d2f;
+        --accent-2: #0f6a73;
+        --line: #e9dfd3;
+        --ok: #1f7a45;
+        --warn: #9b5714;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 0% 0%, rgba(197, 77, 47, 0.12), transparent 40%),
+          radial-gradient(circle at 100% 20%, rgba(15, 106, 115, 0.14), transparent 36%),
+          var(--bg);
+        line-height: 1.6;
+      }
+
+      .wrap {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 2rem 1rem 3rem;
+      }
+
+      .hero {
+        background: linear-gradient(125deg, #fff8ef, #f8fffd 54%, #f6fbff);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 12px 30px rgba(35, 24, 16, 0.07);
+        animation: rise 600ms ease-out;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Optima", "Palatino Linotype", "Book Antiqua", serif;
+        line-height: 1.2;
+        margin-top: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.7rem, 3.2vw, 2.8rem);
+        margin-bottom: 0.5rem;
+      }
+
+      h2 {
+        font-size: clamp(1.25rem, 2.1vw, 1.7rem);
+        margin-bottom: 0.75rem;
+      }
+
+      .sub {
+        color: var(--muted);
+        margin: 0;
+        max-width: 72ch;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .chip {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0.35rem 0.7rem;
+        font-size: 0.9rem;
+        background: var(--paper);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 1rem;
+      }
+
+      .span-12 {
+        grid-column: span 12;
+      }
+
+      .span-7 {
+        grid-column: span 7;
+      }
+
+      .span-5 {
+        grid-column: span 5;
+      }
+
+      .phase-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
+        margin: 0;
+        padding-left: 1.2rem;
+      }
+
+      .phase-list strong {
+        color: var(--accent-2);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 640px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 0.7rem;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+
+      th {
+        font-size: 0.92rem;
+        color: var(--muted);
+      }
+
+      .yes {
+        color: var(--ok);
+        font-weight: 700;
+      }
+
+      .no {
+        color: var(--warn);
+        font-weight: 700;
+      }
+
+      .example {
+        border-left: 4px solid var(--accent);
+        background: #fff7f2;
+        border-radius: 10px;
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
+      }
+
+      code {
+        background: #f2eee8;
+        padding: 0.12rem 0.32rem;
+        border-radius: 6px;
+        font-size: 0.95em;
+      }
+
+      footer {
+        margin-top: 1.2rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 860px) {
+        .span-7,
+        .span-5 {
+          grid-column: span 12;
+        }
+
+        .phase-list {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <h1>Specs-Driven Development + Harness</h1>
+        <p class="sub">
+          A delivery model where every feature moves through explicit phases, every assumption becomes a tracked
+          question, and every change is verified by a deterministic quality harness before code review.
+        </p>
+        <div class="chips" aria-label="Key concepts">
+          <span class="chip">No invention in phases 1-3</span>
+          <span class="chip">TDD red -> green -> refactor</span>
+          <span class="chip">10-layer validation harness</span>
+          <span class="chip">Full AC to test traceability</span>
+        </div>
+      </section>
+
+      <section class="grid" aria-labelledby="what-it-is">
+        <article class="card span-7">
+          <h2 id="what-it-is">What is specs-driven development?</h2>
+          <p>
+            Specs-driven development treats written artifacts as the execution contract between humans and agents.
+            Instead of jumping directly to code, a feature goes through seven phases with clear entry and exit gates.
+          </p>
+          <ol class="phase-list">
+            <li><strong>Specify:</strong> write <code>01-spec.md</code> with ACs and open questions.</li>
+            <li><strong>Spec review:</strong> verify clarity and testability in <code>02-spec-review.md</code>.</li>
+            <li><strong>Plan:</strong> create design + task decomposition in <code>03-design.md</code> and <code>04-tasks.md</code>.</li>
+            <li><strong>Implement:</strong> execute strict TDD with <code>05-implementation-log.md</code>.</li>
+            <li><strong>Test:</strong> add cross-cutting tests in <code>06-test-plan.md</code>.</li>
+            <li><strong>Validate:</strong> run the harness and publish reports in <code>07-validation-report.md</code>.</li>
+            <li><strong>Code review:</strong> publish findings in <code>08-code-review.md</code>.</li>
+          </ol>
+        </article>
+
+        <aside class="card span-5">
+          <h2>What is the harness?</h2>
+          <p>
+            The harness is a deterministic pipeline that validates the work the same way in local runs and CI.
+            It prevents "looks good" decisions and replaces them with measurable gate outcomes.
+          </p>
+          <ul>
+            <li>Same script for every environment: <code>harness.sh</code></li>
+            <li>Layered checks from formatting to security</li>
+            <li>Machine-readable outputs for automated report parsing</li>
+            <li>Baseline-aware for brownfield adoption</li>
+          </ul>
+        </aside>
+
+        <article class="card span-12">
+          <h2>Why document every step?</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Without documentation</th>
+                  <th>With documentation artifacts</th>
+                  <th>Outcome</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Hidden assumptions and silent defaults</td>
+                  <td>Open questions tracked as <code>Q-NNN</code> and resolved explicitly</td>
+                  <td class="yes">Fewer requirement surprises</td>
+                </tr>
+                <tr>
+                  <td>Tasks become broad and ambiguous</td>
+                  <td>Task-level scope, AC links, test IDs, and file boundaries</td>
+                  <td class="yes">Smaller, safer delivery units</td>
+                </tr>
+                <tr>
+                  <td>"Tested" means different things to different people</td>
+                  <td>Shared harness layers and deterministic gate reports</td>
+                  <td class="yes">Consistent quality bar</td>
+                </tr>
+                <tr>
+                  <td>Hard to explain why a change exists</td>
+                  <td>AC -> task -> test -> code traceability matrix</td>
+                  <td class="yes">Fast audits and easier maintenance</td>
+                </tr>
+                <tr>
+                  <td>Review relies on memory and intuition</td>
+                  <td>Structured review artifact with blocker/major/minor findings</td>
+                  <td class="yes">Higher signal in PR discussions</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="card span-12">
+          <h2>10 harness layers (quick view)</h2>
+          <ol>
+            <li>Format and lint</li>
+            <li>Compile</li>
+            <li>Static analysis</li>
+            <li>Architecture rules</li>
+            <li>Unit and slice tests</li>
+            <li>Integration tests</li>
+            <li>Coverage policy</li>
+            <li>Mutation testing</li>
+            <li>API contract diff</li>
+            <li>Dependency security scan</li>
+          </ol>
+          <p>
+            If one layer fails, the feature is not "done" yet. The harness is the feedback loop, not an optional checklist.
+          </p>
+        </article>
+
+        <article class="card span-12">
+          <h2>Examples</h2>
+          <div class="example">
+            <h3>Example 1: Missing pagination rule</h3>
+            <p>
+              During specification, no pagination limit is defined for a list endpoint. Instead of inventing one, the author
+              adds <code>Q-003</code>: "What is the default and max page size?".
+            </p>
+            <p>
+              Result: the decision is explicit before implementation, and tests can assert exact behavior.
+            </p>
+          </div>
+          <div class="example">
+            <h3>Example 2: Red before green</h3>
+            <p>
+              For task <code>T-002</code>, a failing test is first captured in <code>.tdd-state.json</code> with a failure excerpt.
+              Only then does production code editing proceed.
+            </p>
+            <p>
+              Result: no accidental code-first drift; every behavior change has a proving test.
+            </p>
+          </div>
+          <div class="example">
+            <h3>Example 3: Validation catches regression</h3>
+            <p>
+              Integration tests pass, but OpenAPI diff reports a breaking response change. The harness blocks the phase until
+              contract compatibility is restored or formally approved.
+            </p>
+            <p>
+              Result: downstream clients do not get surprised in production.
+            </p>
+          </div>
+        </article>
+
+        <article class="card span-12">
+          <h2>When this approach applies (and when it does not)</h2>
+          <div class="grid" style="margin-top: 0;">
+            <section class="span-6" style="grid-column: span 6;">
+              <h3>Use specs-driven + harness for</h3>
+              <ul>
+                <li>New features with multiple business rules and edge cases</li>
+                <li>API changes where compatibility and contract safety matter</li>
+                <li>Schema and migration work that can impact production data</li>
+                <li>Security-sensitive flows (auth, permissions, secrets, PII)</li>
+                <li>Cross-service integrations and reliability-critical behavior</li>
+                <li>Changes that require auditability and explicit decision history</li>
+              </ul>
+            </section>
+            <section class="span-6" style="grid-column: span 6;">
+              <h3>Do not use the full process for</h3>
+              <ul>
+                <li>Typos, copy updates, and tiny cosmetic edits</li>
+                <li>Formatting-only or file-rename housekeeping work</li>
+                <li>Throwaway prototypes that will not be shipped</li>
+                <li>Very small internal refactors with no behavior change</li>
+                <li>Immediate incident mitigation where speed is the first objective</li>
+              </ul>
+            </section>
+          </div>
+          <p>
+            <strong>Rule of thumb:</strong> if the change can break user behavior, contracts, security, or data, run the full workflow.
+            If the change is low-risk and easily reversible, use a lighter path with focused tests and validation.
+          </p>
+        </article>
+
+        <article class="card span-12">
+          <h2>Bottom line</h2>
+          <p>
+            Specs-driven development is not "more documents" for the sake of process. It is a risk-control system:
+            decide explicitly, implement incrementally, validate mechanically, and review with evidence.
+          </p>
+          <p>
+            When teams document each step, they trade hidden complexity for visible decisions. That is what makes velocity
+            sustainable.
+          </p>
+        </article>
+      </section>
+
+      <footer>
+        Intended for onboarding, team education, and architecture docs. Works as a standalone page on desktop and mobile.
+      </footer>
+    </main>
+  </body>
+</html>
