@@ -1,6 +1,6 @@
 # Spec-Driven Development for Spring Boot 4
 
-A tri-platform toolkit (Claude Code · GitHub Copilot · Windsurf) that drives **Spring Framework 7 / Spring Boot 4** development through a documented, self-validating workflow:
+A quad-platform toolkit (Claude Code · GitHub Copilot · Windsurf · Codex) that drives **Spring Framework 7 / Spring Boot 4** development through a documented, self-validating workflow:
 
 > **specify → review → plan → implement (TDD) → test → validate → review → commit**
 
@@ -11,9 +11,9 @@ The agent validates its own work via a layered harness (build, static analysis, 
 - **No invention.** During specify/review/plan/tasks, the agent never guesses; every uncertainty becomes a tracked open question that you answer before progress continues.
 - **TDD by construction.** Production code can only be written *after* a failing test exists. Hooks enforce it.
 - **Traceable.** Every acceptance criterion (`AC-NNN`) maps to tests, code, and the harness gates that exercised it.
-- **Self-validating.** A single `scripts/harness.sh` runs locally and in CI; the agent reads its reports and writes a structured validation report.
+- **Self-validating.** A single `.github/scripts/harness.sh` runs locally and in CI; the agent reads its reports and writes a structured validation report.
 - **Pre-commit code review** by an agent that uses a Spring-specific rubric.
-- **Tri-platform** with a platform-neutral core; thin wrappers for each tool.
+- **Quad-platform** — Claude Code, GitHub Copilot, Windsurf, and Codex all driven by the same workflow and artifacts.
 
 ## Install
 
@@ -26,6 +26,7 @@ This toolkit is a **set of files you drop into your repo**, not a package you `n
   - [Claude Code](https://docs.claude.com/en/docs/claude-code) (uses `.claude/`)
   - [GitHub Copilot in VS Code](https://code.visualstudio.com/docs/copilot/overview) with chat enabled (uses `.github/`)
   - [Windsurf](https://windsurf.com/) (uses `.windsurf/`)
+  - [Codex CLI](https://github.com/openai/codex) (uses `AGENTS.md` at root + path-scoped `AGENTS.md` files)
 - `bash`, `git`, `jq` on your `PATH` (the harness scripts use them).
 
 You only need the directories for the agent(s) you actually use; the others can be deleted.
@@ -39,15 +40,15 @@ cd my-service
 rm -rf .git && git init
 
 # 2. Drop in your own Spring Boot 4 application code under src/
-#    Merge shared/maven/parent-pom-fragment.xml into your pom.xml
+#    Merge .claude/maven/parent-pom-fragment.xml into your pom.xml
 #    (it pins the 10-layer harness: Surefire, Failsafe, JaCoCo, PIT, Checkstyle,
 #    SpotBugs, ArchUnit deps, OWASP dep-check, OpenAPI generator).
 
 # 3. Make the scripts executable
-chmod +x scripts/*.sh
+chmod +x .github/scripts/*.sh
 
 # 4. Verify the harness wires up
-./scripts/harness.sh --dry-run     # lists the 10 gates without running them
+./.github/scripts/harness.sh --dry-run     # lists the 10 gates without running them
 ```
 
 ### Option B — Add the toolkit to an existing Spring repo
@@ -57,14 +58,15 @@ chmod +x scripts/*.sh
 git clone --depth=1 https://github.com/loiane/specs-driven-development.git /tmp/sdd
 
 # Copy only what you need (skip the agent dirs you won't use):
-cp -r /tmp/sdd/{docs,shared,scripts,examples} .
+cp -r /tmp/sdd/{docs,examples} .
 cp -r /tmp/sdd/.claude   .   # if you use Claude Code
 cp -r /tmp/sdd/.github   .   # if you use Copilot   (merges with existing .github/)
 cp -r /tmp/sdd/.windsurf .   # if you use Windsurf
+cp /tmp/sdd/AGENTS.md    .   # if you use Codex (also copy src/main/AGENTS.md, src/test/AGENTS.md, .specs/AGENTS.md)
 
-chmod +x scripts/*.sh
+chmod +x .github/scripts/*.sh
 
-# Then merge shared/maven/parent-pom-fragment.xml into your pom.xml.
+# Then merge .claude/maven/parent-pom-fragment.xml into your pom.xml.
 # Then run the brownfield onboarding command from your agent (see Use below).
 ```
 
@@ -84,6 +86,7 @@ chmod +x scripts/*.sh
 | Claude Code  | Open the repo, run `/help` — you should see the command catalog. |
 | Copilot      | Open Copilot Chat, type `/spec` — you should see the chat-mode prompt from `.github/chatmodes/`. |
 | Windsurf     | Open Cascade, type `/spec` — Windsurf loads the workflow from `.windsurf/workflows/`. |
+| Codex        | Run `codex "spec this feature"` — Codex reads `AGENTS.md` and follows the spec-author role. |
 
 ## Use
 
@@ -141,40 +144,36 @@ and the equivalent Copilot/Windsurf instructions:
 | "ship it" / "release this" / "prepare release" | `/ship` |
 | "onboard this repo" | `/onboard` |
 
-Full list: [shared/commands/README.md](shared/commands/README.md).
+Full list: see `.claude/commands/` for all command specifications.
 
 ### Running the harness directly
 
 The same gates the agent runs are reachable from a normal terminal:
 
 ```bash
-./scripts/harness.sh                 # all 10 layers
-./scripts/harness.sh --layer tests   # one layer
-./scripts/check-new-code-coverage.sh # diff-coverage gate against main
-./scripts/traceability.sh <feature-id>
+./.github/scripts/harness.sh                 # all 10 layers
+./.github/scripts/harness.sh --layer tests   # one layer
+./.github/scripts/check-new-code-coverage.sh # diff-coverage gate against main
+./.github/scripts/traceability.sh <feature-id>
 ```
 
 ## Repository layout
 
 ```
 docs/             methodology · harness-principles · spec-format · platform-mapping · artifact-contract
-shared/           single source of truth (platform-neutral)
-  ├ agents/       7 AGENT.md role files
-  ├ skills/       21 SKILL.md domain knowledge files
-  ├ commands/     12 command specifications
-  ├ templates/    10 .specs/ artifact templates
-  ├ checklists/   4 review/DoD/gate checklists
-  └ maven/        parent-pom-fragment.xml (10-layer harness, pinned versions)
-.claude/          agents · skills · commands · hooks · settings.json   (Claude Code wrappers)
-.github/          chatmodes · prompts · instructions · workflows/{ci,harness}.yml   (Copilot + CI)
-.windsurf/        rules · workflows                                    (Windsurf wrappers)
-scripts/          harness.sh · detect-stack.sh · check-new-code-coverage.sh · traceability.sh
+AGENTS.md         Codex root instructions (always-on guardrails + slash-command catalog)
+src/main/         → AGENTS.md  Codex production-code guardrails (TDD precondition + Spring conventions)
+src/test/         → AGENTS.md  Codex test-code guardrails
+.specs/           → AGENTS.md  Codex spec-artifact guardrails
+.claude/          agents · skills · commands · hooks · settings.json   (Claude Code)
+.github/          chatmodes · prompts · instructions · skills · workflows/{ci,harness}.yml   (Copilot + CI)
+.windsurf/        rules · workflows · skills                            (Windsurf)
 examples/         greenfield (worked end-to-end) · brownfield (onboarding report)
 ```
 
-The wrappers under `.claude/`, `.github/`, `.windsurf/` are intentionally thin
-pointers — every behavioral change must be made in `shared/` so all three
-platforms stay in lockstep.
+The platform layers under `.claude/`, `.github/`, `.windsurf/`, and the root `AGENTS.md`
+are self-contained — every behavioral change must be applied to all four platforms.
+See `docs/platform-mapping.md` for the full concept-to-file mapping.
 
 ## Workflow artifacts
 
@@ -197,7 +196,7 @@ Each feature lives under `.specs/<feature-id>/`:
 - [docs/methodology.md](docs/methodology.md) — the 7-phase workflow in detail
 - [docs/harness-principles.md](docs/harness-principles.md) — self-validation philosophy and gate layers
 - [docs/spec-format.md](docs/spec-format.md) — EARS-lite spec format with examples
-- [docs/platform-mapping.md](docs/platform-mapping.md) — how Claude/Copilot/Windsurf artifacts map
+- [docs/platform-mapping.md](docs/platform-mapping.md) — how Claude/Copilot/Windsurf/Codex artifacts map
 - [docs/artifact-contract.md](docs/artifact-contract.md) — `.specs/<id>/` file layout and `.tdd-state.json` schema
 - [examples/greenfield/README.md](examples/greenfield/README.md) — full worked feature
 - [examples/brownfield/README.md](examples/brownfield/README.md) — onboarding-only walkthrough
