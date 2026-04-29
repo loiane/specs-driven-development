@@ -17,7 +17,7 @@ Bootstrap an existing Spring codebase into the spec-driven workflow without bloc
 
 ## Process
 
-1. **Detect the stack.** Resolve the Maven module path (optional `/onboard <path>` argument; default `.`). Run `.github/scripts/detect-stack.sh "$MODULE/pom.xml" > .specs/_stack.json`. Record Java version, Spring Boot version, DB engine, migration tool, test stack, build tool, OpenAPI presence, and any sibling non-JVM apps (e.g. Angular/React frontend) detected under `siblings`. Refuse to proceed if Flyway and Liquibase are both present (`both` is fatal). In a polyglot monorepo, the agent's scope is the Maven module only — sibling apps are recorded as context but are not validated by the harness.
+1. **Detect the stack.** Resolve the Maven module path (optional `/onboard <path>` argument; default `.`). Run `.github/scripts/detect-stack.sh "$MODULE/pom.xml" > .specs/_stack.json`. Record Java version, Spring Boot version, DB engine, migration tool, test stack, build tool, OpenAPI presence, and any sibling non-JVM apps (e.g. Angular/React frontend) detected under `siblings`. Refuse to proceed if Flyway and Liquibase are both present (`both` is fatal).
 
 2. **Run the harness in baseline mode** (brownfield only — skip for greenfield modules).
 
@@ -35,14 +35,16 @@ Bootstrap an existing Spring codebase into the spec-driven workflow without bloc
 
 4. **Generate `.specs/_starter-design.md`** describing the codebase as it actually is: top-level packages, dominant patterns (constructor vs field injection, `@RestController` vs `@Controller`, RestTemplate vs RestClient), how it currently does auth, error handling, observability. This becomes the reference for "what's normal here".
 
-5. **Generate `.specs/_known-debt.md`** listing items that fail or barely pass:
+5. **Run frontend baseline checks** when a sibling frontend app exists (e.g. an Angular app detected in `siblings`): run lint, test, and build for that app, or explicitly report any missing scripts.
+
+6. **Generate `.specs/_known-debt.md`** listing items that fail or barely pass:
    - Frozen ArchUnit violations (count + categories).
    - Coverage gaps (per package, with ratchet target).
    - CVE waivers (with expiry dates and tracker IDs).
    - Tests without `# DisabledReason`.
    - Old patterns that should be migrated as features touch them (RestTemplate → RestClient, etc.).
 
-6. **Sanity-check.** Run `mvn verify` once. If it fails for reasons not captured in baselines, halt and ask the user; do not lower thresholds to mask the failure.
+7. **Sanity-check.** Run `mvn verify` once. If it fails for reasons not captured in baselines, halt and ask the user; do not lower thresholds to mask the failure.
 
 ## Hard rules
 
