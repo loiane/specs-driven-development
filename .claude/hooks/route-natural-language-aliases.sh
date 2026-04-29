@@ -27,6 +27,8 @@ case "$lc" in
     emit "/spec" ;;
   *"review the spec"*)
     emit "/spec-review" ;;
+  *"plan this epic"*|*"design this epic"*|*"slice this epic"*)
+    emit "/epic-plan" ;;
   *"plan this"*|*"design this"*|*"break into tasks"*|*"break this into tasks"*)
     emit "/plan" ;;
   *"validate"*|*"run the harness"*)
