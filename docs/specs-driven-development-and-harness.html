@@ -211,6 +211,7 @@
         </p>
         <div class="chips" aria-label="Key concepts">
           <span class="chip">No invention in phases 1-3</span>
+          <span class="chip">Epic mode: 3a -> 3b planning</span>
           <span class="chip">TDD red -> green -> refactor</span>
           <span class="chip">10-layer validation harness</span>
           <span class="chip">Full AC to test traceability</span>
@@ -227,7 +228,8 @@
           <ol class="phase-list">
             <li><strong>Specify:</strong> write <code>01-spec.md</code> with ACs and open questions.</li>
             <li><strong>Spec review:</strong> verify clarity and testability in <code>02-spec-review.md</code>.</li>
-            <li><strong>Plan:</strong> create design + task decomposition in <code>03-design.md</code> and <code>04-tasks.md</code>.</li>
+            <li><strong>Plan:</strong> for normal work, create <code>03-design.md</code> and <code>04-tasks.md</code>.</li>
+            <li><strong>Epic plan (large work):</strong> produce <code>03-epic-design.md</code> and <code>03a-epic-roadmap.md</code> first, then do slice-level design/tasks.</li>
             <li><strong>Implement:</strong> execute strict TDD with <code>05-implementation-log.md</code>.</li>
             <li><strong>Test:</strong> add cross-cutting tests in <code>06-test-plan.md</code>.</li>
             <li><strong>Validate:</strong> run the harness and publish reports in <code>07-validation-report.md</code>.</li>
@@ -248,6 +250,21 @@
             <li>Baseline-aware for brownfield adoption</li>
           </ul>
         </aside>
+
+        <article class="card span-12">
+          <h2>How Epic planning works</h2>
+          <p>
+            For large initiatives, planning is split into two levels so teams avoid committing to detailed tasks too early.
+          </p>
+          <ol>
+            <li><strong>Phase 3a (Epic level):</strong> write <code>03-epic-design.md</code> for boundaries and shared decisions, and <code>03a-epic-roadmap.md</code> for vertical slice sequencing.</li>
+            <li><strong>Phase 3b (Slice level):</strong> run detailed slice design and task breakdown in <code>03-design.md</code> and <code>04-tasks.md</code>.</li>
+            <li><strong>Gate:</strong> do not finalize detailed tasks until Epic-level open questions are resolved (or explicitly deferred with rationale).</li>
+          </ol>
+          <p>
+            Operationally, this maps to <code>/epic-plan</code> first, then <code>/plan</code> for slice-level decomposition.
+          </p>
+        </article>
 
         <article class="card span-12">
           <h2>Why document every step?</h2>
@@ -340,6 +357,16 @@
             </p>
             <p>
               Result: downstream clients do not get surprised in production.
+            </p>
+          </div>
+          <div class="example">
+            <h3>Example 4: Epic sliced before task breakdown</h3>
+            <p>
+              A feature spans checkout, billing, and receipt flows. Instead of writing all tasks at once, the team creates
+              <code>03-epic-design.md</code> and <code>03a-epic-roadmap.md</code>, then plans and implements one vertical slice at a time.
+            </p>
+            <p>
+              Result: lower rework, clearer dependencies, and faster feedback per slice.
             </p>
           </div>
         </article>
