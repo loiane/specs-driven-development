@@ -21,7 +21,7 @@ If any check fails, **refuse the edit** and tell the user:
 
 ## Spring Boot 4 conventions
 
-Follow `shared/skills/spring-boot-4-conventions/SKILL.md`:
+Follow `.github/skills/spring-boot-4-conventions/SKILL.md`:
 
 - Constructor injection only.
 - **Package by feature/domain, not by layer.** Top-level packages are bounded contexts (`giftcard`, `order`, …), each with `api` (published) and `internal` (private) sub-packages. No top-level `controller` / `service` / `repository` / `model` packages.
@@ -34,7 +34,7 @@ Follow `shared/skills/spring-boot-4-conventions/SKILL.md`:
 
 ## Architecture conventions
 
-Follow `shared/skills/archunit-rules/SKILL.md`:
+Follow `.github/skills/archunit-rules/SKILL.md`:
 
 - Each top-level package is a module; cross-module access goes through its `api` sub-package only.
 - Never `import` from another module's `internal` package — enforced by ArchUnit.
@@ -42,7 +42,7 @@ Follow `shared/skills/archunit-rules/SKILL.md`:
 
 ## Security baseline
 
-Follow `shared/skills/spring-security-baseline/SKILL.md`:
+Follow `.github/skills/spring-security-baseline/SKILL.md`:
 
 - Default-deny in `SecurityFilterChain`.
 - Bean Validation on DTOs + service-layer invariant checks.
