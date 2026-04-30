@@ -28,6 +28,11 @@ Make failing frontend tests pass with minimal UI code, then refactor and simplif
 - No edits outside `files_in_scope`.
 - No skipping tests or removing assertions.
 - No backend code edits in this agent.
+- **Use `httpResource` for all GET API calls** (Angular 19+). Do not use `HttpClient.get().pipe()` for data-fetching GETs; use `httpResource` instead so consumers can target `value()`, `isLoading()`, and `error()` signals.
+- **No new npm dependencies** without explicit user confirmation. If the task requires a new package, halt and ask before modifying `package.json`.
+- **No unused code.** Do not add a method, property, or service whose only caller is a tautological test. Surface the design gap with a `Q-NNN` instead.
+- **Extract repeated literals.** Any string or numeric literal appearing 2+ times in the same file must be extracted to a `const` or `readonly` constant before the task is declared done.
+- **Stop at task boundary.** When the task is complete, stop. Do not auto-start the next task. Surface the commit reminder.
 
 ## Handoff
 

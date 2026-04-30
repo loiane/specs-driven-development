@@ -111,6 +111,38 @@ When implementing styling and animations in Angular, consult the following refer
 - **Angular Animations**: Using native CSS (recommended) or the legacy DSL for dynamic effects. Read [angular-animations.md](references/angular-animations.md)
 - **Styling components**: Best practices for component styles and encapsulation. Read [component-styling.md](references/component-styling.md)
 
+## HTTP API Calls
+
+For all GET requests that fetch data from an API, use `httpResource` (Angular 19+) instead of `HttpClient.get().pipe()`.
+
+### Rules
+
+- **Use `httpResource` for GET data-fetching** (Angular 19+). Consumers should target the `value()`, `isLoading()`, and `error()` lifecycle signals.
+- **No new npm dependencies** without explicit user confirmation.
+- **No tautological tests.** Tests for GETs must target `httpResource` lifecycle signals — not raw `HttpClient` mock calls.
+- **Extract repeated literals.** Any URL string or numeric literal appearing 2+ times must be extracted to a `const`.
+
+### Example
+
+```typescript
+readonly products = httpResource<Product[]>('/api/products');
+
+// Template
+@if (products.isLoading()) { <app-spinner /> }
+@if (products.error()) { <p>Failed to load</p> }
+@for (p of products.value() ?? []; track p.id) { ... }
+```
+
+### Testing
+
+```typescript
+expect(component.products.value()).toEqual([...]);
+expect(component.products.isLoading()).toBeFalse();
+expect(component.products.error()).toBeUndefined();
+```
+
+For Angular 18 or earlier, use `toSignal(httpClient.get(...), { initialValue: [] })`.
+
 ## Testing
 
 When writing or updating tests, consult the following references based on the task:

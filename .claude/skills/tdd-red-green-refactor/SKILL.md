@@ -49,8 +49,30 @@ The `block-impl-without-failing-test` hook reads this file. **No `src/main/**` e
 
 - Apply the `clarity-over-cleverness` skill: if there's a simpler way to express the same logic that a junior engineer would understand at a glance, use it.
 - Specifically watch for: nested ternaries, clever streams when a `for` loop is clearer, premature abstraction, dead options, "options bag" parameters with one used field, helper methods with one caller.
+- Also scan for repeated literals: any string or number appearing 2+ times in the same file must be extracted to a `private static final` constant before declaring `phase: done`.
 - Suite must stay green.
 - Append a `simplify` block. Set `phase` to `done`.
+
+### 5. COMMIT — surface stopping report
+
+When `phase` reaches `done`, **STOP**. Do not auto-start the next task.
+
+Surface a stopping report:
+- Files changed (`git status`)
+- Tests passing (module suite green)
+- Suggested commit message (e.g., `feat(gift-card): T-001 apply gift card to order`)
+
+Recommend the 3-step follow-up:
+
+```
+git status               # review what changed
+git commit               # commit the task
+/build <next-task-id>    # start the next task
+```
+
+Next `/build` includes a **pre-flight commit check**: if uncommitted changes from a prior task are detected, refuse to start and surface this reminder.
+
+**Exception:** The user can explicitly request task chaining (e.g., "chain to T-002", "continue without committing") — respect the explicit instruction.
 
 ## Logging format
 
@@ -83,3 +105,5 @@ This pressure to triangulate is the entire point of TDD.
 - Skipping the red step ("I'll add the test after").
 - Modifying an existing test's assertion to match new (wrong) behavior.
 - Marking a task `done` without all four blocks logged.
+- **Don't add a method without a real consumer.** A tautological test that asserts a method returns a fixed value is not a real consumer. If no genuine API boundary exists for the method, surface a `Q-NNN` design gap instead of writing the method.
+- **Auto-starting the next task without giving the user a chance to commit.** Always stop at `phase: done` and surface the commit reminder (Step 5). Only chain tasks when the user explicitly requests it.
