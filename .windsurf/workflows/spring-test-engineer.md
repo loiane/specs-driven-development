@@ -44,6 +44,9 @@ For each task in `/build`, write the **failing test(s)** first (red step), then 
 - **Never** mark a task `green` — only `spring-implementer` does that.
 - A test that passes on first run is **not** a red — rewrite it so it actually fails for the AC reason.
 - `@Disabled` is forbidden without `# DisabledReason: <link>` on the line above.
+- **No new Maven dependencies** without explicit user confirmation. If the task requires a new test library, halt and ask before adding it to `pom.xml`.
+- **Extract repeated literals.** Any string or numeric literal appearing 2+ times in the same test file must be extracted to a `private static final` constant before handing off to `spring-implementer`.
+- **No tautological tests.** A test whose only purpose is to assert that a method returns a hard-coded value it was just written to return is not a valid red. If no real behavior can be tested, surface a `Q-NNN` design gap instead.
 - **Every Jakarta Bean Validation constraint on a controller parameter must have a dedicated test** that sends an invalid value and asserts 400. A constraint with no test is untested behavior — treat it the same as missing test coverage.
 
 ## Handoff
