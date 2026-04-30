@@ -27,12 +27,14 @@ Execute one task end-to-end through the four TDD phases (red → green → refac
 ## Process
 For the supplied `<task-id>`:
 
+0. **Pre-flight commit check.** Run `git status`. If there are uncommitted changes from any prior task, refuse to start. List the changed files and remind: `git commit → /build <task-id>`.
 1. **Activate.** Set `.tdd-state.json` `active_task = <task-id>`. Refuse if any other task is `phase: red|green|refactor|simplify` (one task in flight at a time).
 2. **Red.** Write the smallest test that captures the next AC slice. Run it. Capture the failure message into `tasks[<task-id>].red_failure_excerpt`. Set `phase: "red"`. Append log block.
 3. **Green.** Write the minimum production code under `files_in_scope` to pass the test. Run only the new test, then run all tests. Set `phase: "green"`. Append log block.
 4. **Refactor.** Improve structure without changing behavior. Re-run all tests. Set `phase: "refactor"`. Append log block.
-5. **Simplify.** Apply `clarity-over-cleverness` (untangle ternaries, inline once-used helpers, kill dead options, name domain concepts). Re-run all tests. Set `phase: "simplify"`. Append log block.
+5. **Simplify.** Apply `clarity-over-cleverness` (untangle ternaries, inline once-used helpers, kill dead options, name domain concepts, extract repeated literals). Re-run all tests. Set `phase: "simplify"`. Append log block.
 6. **Done.** Set `phase: "done"`, clear `active_task`. If more ACs in this task remain uncovered, immediately re-run from step 2 with the next slice (do not declare done early).
+7. **STOP — commit reminder.** Surface: files changed (`git status`), tests passing, suggested commit message. Recommend: `git status → git commit → /build <next-task-id>`. Do not auto-start the next task unless the user explicitly requests chaining.
 
 ## Refuse if
 - `<task-id>` is not in `.tdd-state.json`.
@@ -44,4 +46,4 @@ For the supplied `<task-id>`:
 - Every AC listed under `tasks[<task-id>].acs_covered` has at least one `@Tag("AC-NNN")` test.
 - All four phase blocks are present in `05-implementation-log.md` for this task.
 - `.tdd-state.json` shows `phase: "done"` for `<task-id>`.
-- Recommend `/build <next-task>` until all tasks done; then `/test` and `/validate`.
+- Commit reminder surfaced (Step 7); user commits before starting the next task. After all tasks done, run `/test` then `/validate`.

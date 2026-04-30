@@ -123,6 +123,69 @@ if (!x.valid()) return defaultValue;
 return x.value();
 ```
 
+### 8. Remove unused code
+
+The minimum code to pass the test is the right amount of code. A method with no real caller is dead weight — delete it.
+
+**Anti-pattern: "Don't add a method without a real consumer."**
+
+Tautological tests (a test that only asserts that a method returns a fixed value) do **not** count as a real consumer. The correct fix is to surface the design gap and test at a real API boundary.
+
+Bad (tautological test justifying a useless wrapper):
+
+```java
+class FeatureService {
+    boolean isEnabled() { return true; }
+}
+
+@Test void isEnabled_returnsTrue() {
+    assertThat(service.isEnabled()).isTrue();
+}
+```
+
+Why bad: the test asserts nothing about real behavior. The method exists only because the test was written without a genuine consumer. The test will pass forever — it verifies nothing that would break if the feature were removed.
+
+Better — test at the real consumer (a controller, JPA entity lifecycle, scheduled job, etc.):
+
+```java
+// Controller calls isEnabled() to gate the endpoint
+@Test void getDiscount_returns403WhenFeatureDisabled() {
+    featureService.disable("discount");
+    mockMvc.perform(get("/discounts")).andExpect(status().isForbidden());
+}
+```
+
+**Exemption:** Framework-driven entry points (controllers, JPA `@PrePersist` / `@PostLoad`, scheduled jobs, Spring `@EventListener`) are legitimate consumers even when called indirectly by the framework.
+
+### 9. Extract repeated literals to local constants
+
+Any string or numeric literal that appears **twice or more** in the same file should be extracted to a `private static final` constant.
+
+Bad:
+
+```java
+given().post("/api/gift-cards").then().statusCode(201);
+// ... later ...
+given().post("/api/gift-cards").then().statusCode(409);
+```
+
+Better:
+
+```java
+private static final String ENDPOINT_PATH = "/api/gift-cards";
+
+given().post(ENDPOINT_PATH).then().statusCode(201);
+// ... later ...
+given().post(ENDPOINT_PATH).then().statusCode(409);
+```
+
+Rules:
+- **Threshold is 2**, not 3. Extract on the second occurrence.
+- Name constants with a **domain-meaningful identifier** (e.g., `ENDPOINT_PATH`, `MAX_RETRIES`, `DEFAULT_TIMEOUT_MS`).
+- Place at the **top of the class** using `private static final`.
+- Applies equally to test code and production code.
+- Applies to **numeric magic numbers** too (e.g., `private static final int MAX_PAGE_SIZE = 100`).
+
 ## What this skill never does
 
 - Change behavior. The full suite must stay green after each rewrite.

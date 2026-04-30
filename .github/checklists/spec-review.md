@@ -29,6 +29,10 @@ Used by `spring-spec-author` to gate exit from Phase 2.
 - [ ] Source ticket's stated AC are all reflected (or explicitly excluded as non-goals).
 - [ ] Out-of-band inputs (chat clarifications, screenshots) recorded under `## Out-of-Band Inputs`.
 
+## Cutover safety
+
+- [ ] Any user-visible cutover (migration, behavior swap, UI change) either has a feature flag with a documented rollback procedure OR carries an explicit waiver with user sign-off.
+
 ## Sign-off
 
 - [ ] Reviewed by user.

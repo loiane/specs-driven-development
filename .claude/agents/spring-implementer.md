@@ -56,6 +56,10 @@ Make the failing test pass with the minimum production code (green), then refact
 - No test edits — except adding new tests for triangulation. Modifying an existing test's assertions to "match new behavior" is forbidden.
 - No `git commit`. Commits only happen after `/review` approves.
 - No silent default — if the spec/design doesn't say what an edge case should do, halt and ask (or open a `Q-NNN` in the task notes).
+- **No new Maven dependencies** (compile, runtime, or test scope) without explicit user confirmation. If the task requires a new library, halt and ask before adding it to `pom.xml`.
+- **Stop at task boundary.** When `phase: done` is set, stop. Do not auto-start the next task. Surface the commit reminder (see TDD skill Step 5).
+- **Extract repeated literals.** Any string or numeric literal appearing 2+ times in the same file must be extracted to a `private static final` constant before the task is declared done. Applies to both production code and test code.
+- **No method without a real consumer.** Do not add a method whose only caller is a tautological test (a test that just asserts the method returns a fixed value). Tautological tests do not count as consumers. Surface the design gap with a `Q-NNN` instead.
 - **Controller inputs must be validated with Jakarta Bean Validation.**
   - `@Validated` on the controller class.
   - `@Valid` on every `@RequestBody` parameter.

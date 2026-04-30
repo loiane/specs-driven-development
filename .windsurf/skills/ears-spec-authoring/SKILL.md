@@ -31,6 +31,7 @@ Every AC is one of:
 3. **No implementation.** No class names, no DB columns, no library names, no defaults.
 4. **No vague NFRs.** "Fast" → `< 200 ms p95 under 50 RPS` OR demote to `Q-NNN`.
 5. **No silent defaults.** If the user did not say which behavior to pick, write a `Q-NNN`.
+6. **Feature-flag the risky cutovers.** For any cutover, migration, or behavior swap that is user-visible, raise a `Q-NNN` asking whether a feature flag with rollback procedure is required. Default to "yes, use a feature flag" unless the user explicitly waives it.
 
 ## The Q-NNN escape hatch
 
