@@ -1,0 +1,35 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors / IDEs
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+
+# Java / Maven (for consumer projects checked into this tree by mistake)
+target/
+*.class
+*.jar
+*.war
+hs_err_pid*
+
+# Node (Angular tooling)
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+
+# Harness artifacts
+**/target/harness-summary.json
+**/.specs/*/.tdd-state.json.bak
+
+# OS / misc
+*.log
+.env
+.env.*
+!.env.example

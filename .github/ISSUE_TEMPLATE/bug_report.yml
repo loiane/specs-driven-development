@@ -1,0 +1,48 @@
+name: Bug report
+description: Something in the toolkit (skill, prompt, hook, harness, template) is broken or wrong.
+labels: [bug]
+body:
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      description: Which agent surface are you using?
+      placeholder: Claude Code | GitHub Copilot | Windsurf | N/A (docs)
+    validations:
+      required: true
+  - type: input
+    id: asset
+    attributes:
+      label: Affected file(s)
+      description: Path(s) inside the repo (e.g. `.claude/hooks/block-impl-without-failing-test.sh`).
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `/spec ...`
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      placeholder: |
+        - OS:
+        - Agent + version:
+        - jq / bash / Java / Maven versions (if relevant):

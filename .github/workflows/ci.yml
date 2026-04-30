@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run shellcheck
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y shellcheck
+          set -e
+          shopt -s globstar nullglob
+          files=( .github/scripts/*.sh .claude/hooks/*.sh )
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No shell scripts found"; exit 0
+          fi
+          shellcheck -S style "${files[@]}"
+
+  markdownlint:
+    name: Markdown lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Lint markdown
+        run: npx --yes markdownlint-cli2 "**/*.md" "#node_modules" "#examples/**"
+
+  link-check:
+    name: Markdown link check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --exclude-mail --exclude-loopback './**/*.md'
+          fail: true
+
+  platform-parity:
+    name: Tri-platform parity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Diff skills
+        run: |
+          set -e
+          # Compare skill content across .claude / .github / .windsurf.
+          # Fails on any divergence so the three platform copies stay in lockstep.
+          diff -rq .claude/skills .github/skills
+          diff -rq .claude/skills .windsurf/skills
+      - name: Diff templates
+        run: |
+          set -e
+          diff -rq .claude/templates .github/templates
+          diff -rq .claude/templates .windsurf/templates
+      - name: Diff checklists
+        run: |
+          set -e
+          diff -rq .claude/checklists .github/checklists
+          diff -rq .claude/checklists .windsurf/checklists
+      - name: Diff Maven fragment
+        run: |
+          set -e
+          diff -q .claude/maven/parent-pom-fragment.xml .github/maven/parent-pom-fragment.xml
+          diff -q .claude/maven/parent-pom-fragment.xml .windsurf/maven/parent-pom-fragment.xml
+
+  hygiene:
+    name: Repo hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: No .DS_Store
+        run: |
+          if find . -name '.DS_Store' -not -path './.git/*' | grep -q .; then
+            echo "::error::.DS_Store files committed"; exit 1
+          fi
+      - name: Required top-level files
+        run: |
+          set -e
+          for f in LICENSE README.md CONTRIBUTING.md SECURITY.md CHANGELOG.md .gitignore .editorconfig; do
+            test -f "$f" || { echo "::error::missing $f"; exit 1; }
+          done
+      - name: Hooks and scripts are executable
+        run: |
+          set -e
+          for f in .github/scripts/*.sh .claude/hooks/*.sh; do
+            test -x "$f" || { echo "::error::$f is not executable (git update-index --chmod=+x)"; exit 1; }
+          done

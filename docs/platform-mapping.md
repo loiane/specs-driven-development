@@ -2,9 +2,11 @@
 
 How the platform-neutral core in `shared/` is wired into Claude Code, GitHub Copilot, and Windsurf.
 
-## Single source of truth
+## Single source of truth (planned)
 
-Skills, templates, checklists, and prompt fragments live under `shared/`. Each platform-specific directory (`.claude/`, `.github/`, `.windsurf/`) is a thin wrapper that points to or copies from `shared/`. This avoids drift.
+Skills, templates, checklists, and prompt fragments are intended to live under a top-level `shared/` directory, with each platform-specific directory (`.claude/`, `.github/`, `.windsurf/`) reduced to a thin wrapper.
+
+**Current reality:** each platform directory carries its own copy. The CI workflow `.github/workflows/ci.yml` enforces parity via `diff -rq`. Promoting `shared/` to a real source of truth is tracked in [CHANGELOG.md](../CHANGELOG.md) under `## [Unreleased]`.
 
 ## Mapping table
 
@@ -46,15 +48,22 @@ Where Windsurf has no native pre-tool hook, the equivalent guarantee is encoded 
 | `/spec` | `.claude/commands/spec.md` | `.github/prompts/spec.prompt.md` | `.windsurf/workflows/spec.md` |
 | `/spec-review` | … `spec-review.md` | … `spec-review.prompt.md` | … `spec-review.md` |
 | `/epic-plan` | … `epic-plan.md` | … `epic-plan.prompt.md` | … `epic-plan.md` |
-| `/design` | … `design.md` | … `design.prompt.md` | … `design.md` |
-| `/tasks` | … `tasks.md` | … `tasks.prompt.md` | … `tasks.md` |
+| `/plan` | … `plan.md` | … `plan.prompt.md` | … `plan.md` |
 | `/build <task-id>` | … `build.md` | … `build.prompt.md` | … `build.md` |
 | `/code-simplify` (alias: "simplify the code") | … `code-simplify.md` | … `code-simplify.prompt.md` | … `code-simplify.md` |
 | `/test` | … `test.md` | … `test.prompt.md` | … `test.md` |
 | `/validate` | … `validate.md` | … `validate.prompt.md` | … `validate.md` |
 | `/review` | … `review.md` | … `review.prompt.md` | … `review.md` |
-| `/commit` | … `commit.md` | … `commit.prompt.md` | … `commit.md` |
-| `/baseline` | … `baseline.md` | … `baseline.prompt.md` | … `baseline.md` |
+| `/ship` | … `ship.md` | … `ship.prompt.md` | … `ship.md` |
+| `/onboard` | … `onboard.md` | … `onboard.prompt.md` | … `onboard.md` |
+| `/wire-harness` | … `wire-harness.md` | … `wire-harness.prompt.md` | … `wire-harness.md` |
+| `/status` | … `status.md` | … `status.prompt.md` | … `status.md` |
+| `/help` | … `help.md` | … `help.prompt.md` | … `help.md` |
+
+> **Note:** `git commit` is run by the human, not the agent. There is no
+> `/commit` slash command. Likewise the brownfield baseline is captured by
+> `/onboard` (which calls `./.github/scripts/harness.sh --baseline`); there
+> is no separate `/baseline` command.
 
 ## MCP servers
 
@@ -68,4 +77,4 @@ The agent runs `.github/scripts/detect-stack.sh --mcp` at the start of `/spec` t
 
 ## Drift control
 
-A `.github/scripts/sync-platforms.sh` (planned) regenerates `.claude/`, `.github/`, and `.windsurf/` wrappers from `shared/`. Until then, any change to `skills/<name>/SKILL.md` must be propagated manually; CI lints for divergent copies.
+A `.github/scripts/sync-platforms.sh` (planned) will regenerate the per-platform copies from `shared/` once that directory exists. Until then, any change to a skill, template, or checklist must be propagated manually to all three platform directories. CI (`.github/workflows/ci.yml`) runs `diff -rq` and fails on any divergence.

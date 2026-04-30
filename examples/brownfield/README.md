@@ -18,11 +18,11 @@ recommended retrofit path before any new feature work begins.
 
 ## What `/onboard` does
 
-1. Runs `scripts/detect-stack.sh`, writes `.specs/_stack.json`.
+1. Runs `.github/scripts/detect-stack.sh`, writes `.specs/_stack.json`.
 2. Detects `migration == "none"` despite Postgres in prod → flags as a
    high-priority retrofit (not fatal; `both` would be fatal).
 3. Counts source/test → classifies as **brownfield**.
-4. Runs `scripts/harness.sh --baseline` to capture today's reality (passes
+4. Runs `.github/scripts/harness.sh --baseline` to capture today's reality (passes
    what passes; missing layers reported as `skipped` not `fail`).
 5. Writes [`.specs/_onboarding.md`](./.specs/_onboarding.md) with the recommended sequence.
 

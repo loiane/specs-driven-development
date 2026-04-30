@@ -11,7 +11,7 @@ The agent validates its own work via a layered harness (build, static analysis, 
 - **No invention.** During specify/review/plan/tasks, the agent never guesses; every uncertainty becomes a tracked open question that you answer before progress continues.
 - **TDD by construction.** Production code can only be written *after* a failing test exists. Hooks enforce it.
 - **Traceable.** Every acceptance criterion (`AC-NNN`) maps to tests, code, and the harness gates that exercised it.
-- **Self-validating.** A single `scripts/harness.sh` runs locally and in CI; the agent reads its reports and writes a structured validation report.
+- **Self-validating.** A single `.github/scripts/harness.sh` runs locally and in CI; the agent reads its reports and writes a structured validation report.
 - **Pre-commit code review** by an agent that uses a Spring-specific rubric.
 - **Tri-platform** with a platform-neutral core; thin wrappers for each tool.
 
@@ -39,15 +39,15 @@ cd my-service
 rm -rf .git && git init
 
 # 2. Drop in your own Spring Boot 4 application code under src/
-#    Merge shared/maven/parent-pom-fragment.xml into your pom.xml
+#    Merge .github/maven/parent-pom-fragment.xml into your pom.xml
 #    (it pins the 10-layer harness: Surefire, Failsafe, JaCoCo, PIT, Checkstyle,
 #    SpotBugs, ArchUnit deps, OWASP dep-check, OpenAPI generator).
 
-# 3. Make the scripts executable
-chmod +x scripts/*.sh
+# 3. Make the scripts and hooks executable
+chmod +x .github/scripts/*.sh .claude/hooks/*.sh
 
 # 4. Verify the harness wires up
-./scripts/harness.sh --dry-run     # lists the 10 gates without running them
+./.github/scripts/harness.sh --report     # runs the harness and emits a JSON summary
 ```
 
 ### Option B — Add the toolkit to an existing Spring repo
@@ -57,25 +57,23 @@ chmod +x scripts/*.sh
 git clone --depth=1 https://github.com/loiane/specs-driven-development.git /tmp/sdd
 
 # Copy only what you need (skip the agent dirs you won't use):
-cp -r /tmp/sdd/{docs,shared,scripts,examples} .
+cp -r /tmp/sdd/docs /tmp/sdd/examples .
 cp -r /tmp/sdd/.claude   .   # if you use Claude Code
 cp -r /tmp/sdd/.github   .   # if you use Copilot   (merges with existing .github/)
 cp -r /tmp/sdd/.windsurf .   # if you use Windsurf
 
-chmod +x scripts/*.sh
+chmod +x .github/scripts/*.sh .claude/hooks/*.sh
 
-# Then merge shared/maven/parent-pom-fragment.xml into your pom.xml.
+# Then merge .github/maven/parent-pom-fragment.xml into your pom.xml.
 # Then run the brownfield onboarding command from your agent (see Use below).
 ```
 
 > **Note on `.github/`** — if you already have `.github/workflows/`, review
-> `.github/workflows/harness.yml` before copying so it doesn't clobble yours.
-> The toolkit ships two workflows:
->
-> | Workflow | Purpose | When to keep |
-> | --- | --- | --- |
-> | `ci.yml` | Validates the toolkit itself (shellcheck, YAML lint, broken links, skill structure) | Only in the **toolkit repo** — delete it from your Spring project |
-> | `harness.yml` | Runs the full 10-layer Spring harness (build, tests, coverage, mutation, etc.) | Only in your **Spring project** — it requires a `pom.xml` |
+> `.github/workflows/ci.yml` before copying so it doesn't clobber yours.
+> The shipped `ci.yml` validates **the toolkit itself** (shellcheck, markdown
+> lint, broken links, tri-platform parity). In a Spring consumer project you
+> should **delete it** and add your own workflow that calls
+> `./.github/scripts/harness.sh` to run the 10-layer Spring harness.
 
 ### Verify per-platform wiring
 
@@ -131,7 +129,8 @@ to produce slice-level detailed design and tasks from the approved roadmap.
 
 You don't have to remember the slash names. These phrases are routed to the
 right command by [.claude/hooks/route-natural-language-aliases.sh](.claude/hooks/route-natural-language-aliases.sh)
-and the equivalent Copilot/Windsurf instructions:
+and the equivalent Copilot ([.github/instructions/always-on.instructions.md](.github/instructions/always-on.instructions.md))
+and Windsurf ([.windsurf/rules/always-on.md](.windsurf/rules/always-on.md)) instructions:
 
 | You type | Runs |
 | --- | --- |
@@ -146,40 +145,34 @@ and the equivalent Copilot/Windsurf instructions:
 | "ship it" / "release this" / "prepare release" | `/ship` |
 | "onboard this repo" | `/onboard` |
 
-Full list: [shared/commands/README.md](shared/commands/README.md).
+Full list: [.github/prompts/](.github/prompts/) (Copilot), [.claude/commands/](.claude/commands/) (Claude Code), [.windsurf/workflows/](.windsurf/workflows/) (Windsurf).
 
 ### Running the harness directly
 
 The same gates the agent runs are reachable from a normal terminal:
 
 ```bash
-./scripts/harness.sh                 # all 10 layers
-./scripts/harness.sh --layer tests   # one layer
-./scripts/check-new-code-coverage.sh # diff-coverage gate against main
-./scripts/traceability.sh <feature-id>
+./.github/scripts/harness.sh                 # all 10 layers
+./.github/scripts/harness.sh --report        # emit harness-summary.json
+./.github/scripts/check-new-code-coverage.sh # diff-coverage gate against main
+./.github/scripts/traceability.sh <feature-id>
 ```
 
 ## Repository layout
 
 ```text
 docs/             methodology · harness-principles · spec-format · platform-mapping · artifact-contract
-shared/           single source of truth (platform-neutral)
-  ├ agents/       7 AGENT.md role files
-  ├ skills/       22 SKILL.md domain knowledge files
-  ├ commands/     13 command specifications
-  ├ templates/    12 .specs/ artifact templates
-  ├ checklists/   4 review/DoD/gate checklists
-  └ maven/        parent-pom-fragment.xml (10-layer harness, pinned versions)
-.claude/          agents · skills · commands · hooks · settings.json   (Claude Code wrappers)
-.github/          chatmodes · prompts · instructions · workflows/{ci,harness}.yml   (Copilot + CI)
-.windsurf/        rules · workflows                                    (Windsurf wrappers)
-scripts/          harness.sh · detect-stack.sh · check-new-code-coverage.sh · traceability.sh
-examples/         greenfield (worked end-to-end) · brownfield (onboarding report)
+.claude/          agents · skills · commands · hooks · templates · checklists · maven · settings.json   (Claude Code)
+.github/          chatmodes · prompts · instructions · skills · templates · checklists · maven · scripts · workflows/   (Copilot + CI)
+.windsurf/        rules · workflows · skills · templates · checklists · maven   (Windsurf)
+examples/         greenfield (worked end-to-end specs) · brownfield (onboarding report)
 ```
 
-The wrappers under `.claude/`, `.github/`, `.windsurf/` are intentionally thin
-pointers — every behavioral change must be made in `shared/` so all three
-platforms stay in lockstep.
+Each platform directory currently carries its own copy of the skills,
+templates, checklists, and Maven parent-pom fragment. The CI workflow
+(`.github/workflows/ci.yml`) enforces that these copies stay in lockstep via
+`diff -rq` parity checks. A future `shared/` directory will become the single
+source of truth — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Workflow artifacts
 
@@ -220,4 +213,4 @@ Each feature lives under `.specs/<feature-id>/`:
 
 ## License
 
-MIT.
+MIT — see [LICENSE](LICENSE).

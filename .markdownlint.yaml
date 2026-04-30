@@ -1,0 +1,13 @@
+# Lightweight markdownlint config for the toolkit.
+# We are a docs-heavy repo; loosen rules that fight markdown intentionally
+# used for prompts, chatmodes, and skill files.
+default: true
+MD013: false   # line length — prompts & tables exceed 80 cols
+MD024:
+  siblings_only: true  # allow repeated headings under different sections
+MD033: false   # inline HTML is used in some skill references
+MD041: false   # first line need not be h1 (chatmode/prompt frontmatter)
+MD046:
+  style: fenced
+MD007:
+  indent: 2
