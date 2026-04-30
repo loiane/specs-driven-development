@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Specs-Driven Development + Harness</title>
+    <meta name="description" content="A delivery model where every feature moves through explicit phases, every assumption becomes a tracked question, and every change is verified by a deterministic quality harness before code review." />
     <style>
       :root {
         --bg: #f7f4ef;
@@ -108,6 +109,10 @@
         grid-column: span 7;
       }
 
+      .span-6 {
+        grid-column: span 6;
+      }
+
       .span-5 {
         grid-column: span 5;
       }
@@ -152,11 +157,6 @@
         font-weight: 700;
       }
 
-      .no {
-        color: var(--warn);
-        font-weight: 700;
-      }
-
       .example {
         border-left: 4px solid var(--accent);
         background: #fff7f2;
@@ -191,12 +191,19 @@
 
       @media (max-width: 860px) {
         .span-7,
+        .span-6,
         .span-5 {
           grid-column: span 12;
         }
 
         .phase-list {
           grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .hero {
+          animation: none;
         }
       }
     </style>
@@ -228,8 +235,7 @@
           <ol class="phase-list">
             <li><strong>Specify:</strong> write <code>01-spec.md</code> with ACs and open questions.</li>
             <li><strong>Spec review:</strong> verify clarity and testability in <code>02-spec-review.md</code>.</li>
-            <li><strong>Plan:</strong> for normal work, create <code>03-design.md</code> and <code>04-tasks.md</code>.</li>
-            <li><strong>Epic plan (large work):</strong> produce <code>03-epic-design.md</code> and <code>03a-epic-roadmap.md</code> first, then do slice-level design/tasks.</li>
+            <li><strong>Plan:</strong> normal work → <code>03-design.md</code> + <code>04-tasks.md</code>; large epic work → <code>03-epic-design.md</code> + <code>03a-epic-roadmap.md</code> first, then slice-level design and tasks.</li>
             <li><strong>Implement:</strong> execute strict TDD with <code>05-implementation-log.md</code>.</li>
             <li><strong>Test:</strong> add cross-cutting tests in <code>06-test-plan.md</code>.</li>
             <li><strong>Validate:</strong> run the harness and publish reports in <code>07-validation-report.md</code>.</li>
@@ -237,8 +243,8 @@
           </ol>
         </article>
 
-        <aside class="card span-5">
-          <h2>What is the harness?</h2>
+        <aside class="card span-5" aria-labelledby="what-is-harness">
+          <h2 id="what-is-harness">What is the harness?</h2>
           <p>
             The harness is a deterministic pipeline that validates the work the same way in local runs and CI.
             It prevents "looks good" decisions and replaces them with measurable gate outcomes.
@@ -272,9 +278,9 @@
             <table>
               <thead>
                 <tr>
-                  <th>Without documentation</th>
-                  <th>With documentation artifacts</th>
-                  <th>Outcome</th>
+                  <th scope="col">Without documentation</th>
+                  <th scope="col">With documentation artifacts</th>
+                  <th scope="col">Outcome</th>
                 </tr>
               </thead>
               <tbody>
@@ -374,7 +380,7 @@
         <article class="card span-12">
           <h2>When this approach applies (and when it does not)</h2>
           <div class="grid" style="margin-top: 0;">
-            <section class="span-6" style="grid-column: span 6;">
+            <section class="span-6">
               <h3>Use specs-driven + harness for</h3>
               <ul>
                 <li>New features with multiple business rules and edge cases</li>
@@ -385,7 +391,7 @@
                 <li>Changes that require auditability and explicit decision history</li>
               </ul>
             </section>
-            <section class="span-6" style="grid-column: span 6;">
+            <section class="span-6">
               <h3>Do not use the full process for</h3>
               <ul>
                 <li>Typos, copy updates, and tiny cosmetic edits</li>
