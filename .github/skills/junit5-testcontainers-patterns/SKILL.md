@@ -26,10 +26,20 @@ authoritative_references:
 
 ## Naming + traceability
 
-- `@DisplayName("AC-007: given expired gift card, when applied, then returns 4xx")` — always use **given/when/then** format
-- `@Tag("AC-007")` (machine-readable for traceability matrix)
+- **Every `@Test` and `@ParameterizedTest` method MUST carry `@DisplayName`.** No exceptions — write the display name *before* the test body so articulating it forces clarity about what the test verifies. (Project rule: `feedback_displayname_on_every_test.md`.)
+- The full annotation block on every test method is **all three** lines, in this order:
+
+  ```java
+  @Test
+  @Tag("AC-007")
+  @DisplayName("AC-007: given expired gift card, when applied, then returns 4xx")
+  void appliesExpiredGiftCard() { ... }
+  ```
+
+- Display-name format for AC-traced tests: `"<T-ID>: given <precondition>, when <action>, then <outcome>"`. Short BDD-style sentence is acceptable for utility/regression tests not tied to a specific AC.
+- `@Tag("AC-NNN")` makes the test machine-readable for the traceability matrix.
 - One AC per test method when feasible.
-- Pattern: `"<T-ID>: given <precondition>, when <action>, then <outcome>"`
+- The simplify phase audits every newly-authored or modified test in the diff for `@DisplayName` — that's the safety net if the red phase missed it.
 
 ## Testcontainers with `@ServiceConnection` (Spring Boot 4)
 

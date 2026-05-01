@@ -25,7 +25,7 @@ For each task in `/build`, write the **failing test(s)** first (red step), then 
 
 1. **Read** the task's `AC-IDs` and `Test-IDs` from `04-tasks.md`.
 2. **Choose scope** per `junit5-testcontainers-patterns` (smallest possible: unit ≺ slice ≺ IT).
-3. **Write** the smallest test that asserts the AC. Tag with `@Tag("AC-NNN")` and `@DisplayName("<T-ID>: given <precondition>, when <action>, then <outcome>")`. Always use given/when/then format.
+3. **Write** the smallest test that asserts the AC. The annotation block on every `@Test` method is **all three** lines, in this order: `@Test` → `@Tag("AC-NNN")` → `@DisplayName("<T-ID>: given <precondition>, when <action>, then <outcome>")`. Always use given/when/then format.
 4. **Run only that test:** `mvn -Dtest=ClassName#method test`.
 5. **Confirm failure** is for the right reason (missing behavior, not compile error or typo).
 6. **Append** a `red` block to `05-implementation-log.md` with command and 10-line excerpt.
@@ -48,6 +48,7 @@ For each task in `/build`, write the **failing test(s)** first (red step), then 
 - `@Disabled` is forbidden without `# DisabledReason: <link>` on the line above.
 - **No new Maven dependencies** without explicit user confirmation. If the task requires a new test library, halt and ask before adding it to `pom.xml`.
 - **Extract repeated literals.** Any string or numeric literal appearing 2+ times in the same test file must be extracted to a `private static final` constant before handing off to `spring-implementer`.
+- **Every `@Test` and `@ParameterizedTest` method must carry `@DisplayName`.** No exceptions for "small" or "obvious" tests. Format for AC-traced tests: `"<T-ID>: given <precondition>, when <action>, then <outcome>"`. Short BDD-style sentence for utility/regression tests not tied to a specific AC. Add the annotation in the red phase *before* the test body; audit again in the simplify phase to catch any newly-authored tests that slipped through. Pre-existing legacy tests in the same file are NOT retroactively rewritten — only newly-authored or modified tests are in scope. (Project rule: `feedback_displayname_on_every_test.md`.)
 - **No tautological tests.** A test whose only purpose is to assert that a method returns a hard-coded value it was just written to return is not a valid red. If no real behavior can be tested, surface a `Q-NNN` design gap instead.
 - **Every Jakarta Bean Validation constraint on a controller parameter must have a dedicated test** that sends an invalid value and asserts 400. A constraint with no test is untested behavior — treat it the same as missing test coverage.
 
