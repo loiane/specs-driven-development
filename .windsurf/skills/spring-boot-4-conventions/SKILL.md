@@ -208,6 +208,7 @@ public record GiftCardProperties(@NotBlank String baseUrl, @Min(1) int timeoutMs
 - `status().isUnprocessableEntity()` in `MockMvc` tests — deprecated and removed in Spring MVC Test 7.0; use `status().is(422)` instead.
 - `new MappingJackson2HttpMessageConverter()` passed to `standaloneSetup(...).setMessageConverters(...)` — `MappingJackson2HttpMessageConverter` is removed in Spring 7; drop the `.setMessageConverters()` call entirely (`standaloneSetup` auto-registers Jackson).
 - **Fully-qualified type names (FQNs) inline in method signatures or bodies** — never write `jakarta.servlet.http.HttpServletResponse response` or `throws java.io.IOException` directly in code; always add the proper `import` statement at the top of the file and use the simple class name. FQNs in code bypass IDE navigation, break Spotless/google-java-format style checks, and make code harder to read.
+- **Multiple related constants that represent a closed set of values** — replace with an `enum`. A cluster of `public static final String STATUS_OPEN = "OPEN"` declarations is a sign that the domain type is missing; declare an `enum` instead and let the compiler enforce exhaustiveness. Enums are preferred for state, role, type, category, and any other finite named set. Single-purpose or cross-cutting constants (e.g. a header name, a cache TTL) may remain `static final` fields.
 
 ## Java 25 features to use freely
 

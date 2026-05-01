@@ -121,6 +121,7 @@ For all GET requests that fetch data from an API, use `httpResource` (Angular 19
 - **No new npm dependencies** without explicit user confirmation.
 - **No tautological tests.** Tests for GETs must target `httpResource` lifecycle signals — not raw `HttpClient` mock calls.
 - **Extract repeated literals.** Any URL string or numeric literal appearing 2+ times must be extracted to a `const`.
+- **Prefer enums (or `as const` union types) over multiple related string/number constants.** A group of `export const STATUS_OPEN = 'OPEN'` declarations that model a closed set of values must be an `enum` or an `as const` object with a derived union type. Use enums/union types for state, role, type, category, and any other finite named set. Single-purpose constants may remain plain `const`.
 
 ### Example
 

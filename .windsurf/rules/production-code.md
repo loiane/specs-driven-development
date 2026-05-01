@@ -17,3 +17,7 @@ Apply skills: `.windsurf/skills/spring-boot-4-conventions/SKILL.md`, `archunit-r
 Hard convention: **package by feature/domain, not by layer**. Top-level packages are bounded contexts (e.g. `giftcard`, `order`), each with `api` (published) and `internal` (private) sub-packages. Never create top-level `controller`, `service`, `repository`, `model`, `dto`, or `util` packages.
 
 Hard convention: **no Lombok** in any new code. Use Java records, explicit constructors, and `LoggerFactory.getLogger(...)` instead of `@Data`, `@Getter`, `@Setter`, `@Builder`, `@RequiredArgsConstructor`, `@Slf4j`, etc.
+
+Hard convention: **never use fully-qualified type names inline**. Always add an `import` statement and use the simple class name. `new com.example.Product()` inside a method body is forbidden; use `new Product()` with a proper import.
+
+Hard convention: **prefer enums over multiple related constants**. A cluster of `public static final String` values modelling a closed set (status, role, type, category) must be an `enum`. Single-purpose constants may remain `static final` fields.
