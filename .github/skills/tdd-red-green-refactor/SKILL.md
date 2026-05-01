@@ -17,6 +17,7 @@ authoritative_references:
 
 - Read the task entry in `04-tasks.md`. Confirm `Test-IDs` and `AC-IDs`.
 - Write the smallest possible test that asserts the behavior described by the AC.
+  - **Annotation block on every `@Test` method is non-negotiable: `@Test` → `@Tag("AC-NNN")` → `@DisplayName("...")`.** Write the `@DisplayName` *before* the test body — the act of articulating the display name forces clarity about what the test verifies. Format for AC-traced tests: `"<T-ID>: given <precondition>, when <action>, then <outcome>"`. Short BDD-style sentence is acceptable for utility/regression tests not tied to a specific AC. (Project rule: `feedback_displayname_on_every_test.md`.)
 - Run only that test (`mvn -Dtest=ClassName#method test`).
 - The test **must fail**, and the failure must be **for the right reason** (the asserted behavior is missing, not a typo or compilation error).
 - Append a `red` block to `05-implementation-log.md` with the failing command and the **first 10 lines** of the failure output.
@@ -49,7 +50,8 @@ The `block-impl-without-failing-test` hook reads this file. **No `src/main/**` e
 
 - Apply the `clarity-over-cleverness` skill: if there's a simpler way to express the same logic that a junior engineer would understand at a glance, use it.
 - Specifically watch for: nested ternaries, clever streams when a `for` loop is clearer, premature abstraction, dead options, "options bag" parameters with one used field, helper methods with one caller.
-- Also scan for repeated literals: any string or number appearing 2+ times in the same file must be extracted to a `private static final` constant before declaring `phase: done`.
+- Also scan for repeated literals: any string or number appearing 2+ times in the same class (production OR test) must be extracted to a `private static final` constant at the top of the class with a domain-meaningful name. Avoids SonarQube `java:S1192` (string literal duplicated). Single-use literals are fine inline. (Rule: `feedback_extract_repeated_literals.md`.)
+- **Audit every newly-authored or modified test method in the diff for `@DisplayName`.** Any `@Test` or `@ParameterizedTest` without one gets it added here. This is the safety net for the red-phase rule — if a test slipped through without it, simplify is the last chance to catch it before the task is `done`. Pre-existing legacy tests in the same file that were not touched by this task are NOT retroactively rewritten (scope-creep guard). (Rule: `feedback_displayname_on_every_test.md`.)
 - Suite must stay green.
 - Append a `simplify` block. Set `phase` to `done`.
 
