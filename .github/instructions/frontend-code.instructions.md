@@ -20,6 +20,8 @@ These rules apply when a task includes files under `src/**`.
 - Keep smart/container logic separate from presentational components where practical.
 - Avoid hardcoded API URLs in components; route all calls through services.
 - Keep templates accessible: semantic buttons/inputs, labels, and keyboard-operable controls.
+- **Prefer enums (or `as const` union types) over multiple related string/number constants.** A group of `export const STATUS_OPEN = 'OPEN'` declarations modelling a closed set must be an `enum` or `as const` object with a derived union type (state, role, type, category, etc.). Single-purpose constants may remain plain `const`.
+- **Never use fully-qualified class paths inline.** In TypeScript, always import the type/class at the top of the file and reference the simple name.
 
 ## Test rules
 

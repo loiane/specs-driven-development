@@ -31,6 +31,8 @@ Follow `shared/skills/spring-boot-4-conventions/SKILL.md`:
 - Pagination on every list endpoint.
 - `@ConfigurationProperties` records for grouped settings.
 - **No Lombok.** No `@Data`, `@Getter`, `@Setter`, `@Builder`, `@RequiredArgsConstructor`, `@Slf4j`, etc. Java records and explicit constructors replace them.
+- **Never use fully-qualified type names inline.** Always add an `import` statement and use the simple class name. `new com.example.Product()` inside a method body is forbidden; use `new Product()` with a proper import.
+- **Prefer enums over multiple related constants.** A set of `public static final String` values modelling a closed domain set (status, role, type, category) must be an `enum`. Single-purpose constants may remain `static final` fields.
 
 ## Architecture conventions
 
