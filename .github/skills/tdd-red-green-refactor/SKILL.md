@@ -72,6 +72,8 @@ git commit               # commit the task
 /build <next-task-id>    # start the next task
 ```
 
+If the user asks the agent to run `git commit`, the agent must ask for explicit permission immediately before that specific commit. Permission is single-use and never carries forward to later commits.
+
 Next `/build` includes a **pre-flight commit check**: if uncommitted changes from a prior task are detected, refuse to start and surface this reminder.
 
 **Exception:** The user can explicitly request task chaining (e.g., "chain to T-002", "continue without committing") — respect the explicit instruction.

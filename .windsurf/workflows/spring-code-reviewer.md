@@ -55,4 +55,4 @@ Hand control back to user with:
 - `08-code-review.md` complete.
 - Final verdict explicit.
 - If ❌, the user (or the user instructing the implementer agent) addresses findings; then re-run `/validate` and `/review`.
-- If ✅ or ⚠️, the user is free to `git commit` (this toolkit never auto-commits).
+- If ✅ or ⚠️, the user is free to `git commit`. The agent must never auto-commit; if the user asks the agent to commit, ask for explicit one-time permission immediately before that specific `git commit`.

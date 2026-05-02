@@ -39,6 +39,13 @@ You are working in a workspace that uses the spec-driven workflow defined in `do
 - A missing report for a configured layer = error.
 - Every waiver references an ADR file.
 
+## Commit permission rule (all phases)
+
+- Never commit code automatically.
+- Before running any `git commit`, ask the user for explicit permission for that specific commit.
+- Commit permission is single-use. After one commit, ask again before any later commit.
+- Prior consent in the same session does not grant blanket permission for future commits.
+
 ## Spring Boot 4 conventions
 
 Apply `shared/skills/spring-boot-4-conventions/SKILL.md`:

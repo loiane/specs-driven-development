@@ -54,7 +54,7 @@ Make the failing test pass with the minimum production code (green), then refact
 - No assertion removal.
 - No edits outside `Files in scope`.
 - No test edits — except adding new tests for triangulation. Modifying an existing test's assertions to "match new behavior" is forbidden.
-- No `git commit`. Commits only happen after `/review` approves.
+- Never commit automatically. Before any `git commit`, ask the user for explicit permission for that specific commit. Permission is single-use and must be re-requested before every later commit.
 - No silent default — if the spec/design doesn't say what an edge case should do, halt and ask (or open a `Q-NNN` in the task notes).
 - **No new Maven dependencies** (compile, runtime, or test scope) without explicit user confirmation. If the task requires a new library, halt and ask before adding it to `pom.xml`.
 - **Stop at task boundary.** When `phase: done` is set, stop. Do not auto-start the next task. Surface the commit reminder (see TDD skill Step 5).
@@ -87,4 +87,4 @@ When invoked standalone (no active task):
 2. Run simplify pass.
 3. Suite must stay green.
 4. Show the user a diff summary.
-5. Do **not** auto-commit; user reviews and explicitly commits.
+5. Do **not** auto-commit. If the user asks the agent to commit, ask for explicit one-time permission immediately before running `git commit`.
